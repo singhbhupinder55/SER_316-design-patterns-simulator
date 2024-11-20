@@ -1,0 +1,39 @@
+plugins {
+    id 'java' // Java plugin
+    id 'application' // Application plugin for running Java apps
+    id 'checkstyle' // Static code analysis with Checkstyle
+    id 'com.github.spotbugs' version '5.0.13' // Static bug analysis with SpotBugs
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral() // Use Maven Central for dependencies
+}
+
+dependencies {
+    // JUnit 5 for testing
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+application {
+    mainClass = 'ser316.Main' // Specify your main class with its package
+}
+
+checkstyle {
+    toolVersion = '8.8' // Use Checkstyle version 8.8
+    configFile = file("config/checkstyle/checkstyle.xml") // Custom Checkstyle configuration
+}
+
+spotbugs {
+    effort = 'max' // Maximum effort for analysis
+    reportLevel = 'low' // Include low-priority warnings
+    ignoreFailures = true // Prevent SpotBugs from failing the build
+    toolVersion = '4.7.3' // Ensure compatibility with JDK versions
+}
+
+tasks.named('test') {
+    useJUnitPlatform() // Enable JUnit 5 platform for tests
+}
