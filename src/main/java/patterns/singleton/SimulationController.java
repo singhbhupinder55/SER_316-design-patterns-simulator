@@ -1,6 +1,8 @@
 package patterns.singleton;
 
-import java.util.Locale;
+import patterns.factory.Building;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * Singleton class for managing the simulation.
  * Ensures only one instance of SimulationController exists.
@@ -10,9 +12,12 @@ public class SimulationController {
     // Step 1: Create a private static variable to hold the single instance.
     private static volatile SimulationController instance;
 
+    // Stores a list of startups for the simulation
+    private final List<Building> startups;
 
     // Step 2: Make the constructor private to prevent instantiation from outside.
     private SimulationController() {
+        this.startups = new ArrayList<>();
         System.out.println("SimulationController Instance Created!");
     }
 
@@ -34,25 +39,19 @@ public class SimulationController {
         }
 
     /**
-     * Example method to demonstrate functionality of the Singleton.
-     * This method will simulate starting the simulation.
+     * Adds a startup to the simulation.
+     * @param startup the Building object representing the startup
      */
-    public void startSimulation() {
-        System.out.println("Starting the Silicon Valley Simulator!");
+    public void addStartup(Building startup) {
+        startups.add(startup);
     }
 
     /**
-     * Example of a localized string conversion to avoid locale-sensitive issues.
-     * Converts a given input to uppercase using the default root locale.
+     * Returns the list of startups.
      *
-     * @param input the input string to convert
-     * @return the uppercase version of the input
+     * @return the list of Building objects
      */
-    public String processInput(String input) {
-        if (input == null || input.isEmpty()) {
-            return "Input is empty!";
-        }
-        // Use Locale.ROOT to ensure consistent behavior across locales
-        return input.toUpperCase(Locale.ROOT);
+    public List<Building> getStartups() {
+        return startups;
     }
 }

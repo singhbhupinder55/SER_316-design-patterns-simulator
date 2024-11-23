@@ -24,7 +24,7 @@ public class BuildingFactoryTest {
 
         // Assert the created object is not null.
         assertNotNull(office, "Office building should not be null");
-
+        assertEquals("Office", office.getClass().getSimpleName(), "The created building should be of type Office");
         // Call the construct method and ensure it runs correctly.
         office.construct(); // Should print "Constructing an Office Building."
     }
@@ -37,6 +37,7 @@ public class BuildingFactoryTest {
     public void testCreateFactoryBuilding() {
         Building factory = BuildingFactory.createBuilding("factory");
         assertNotNull(factory, "Factory building should not be null");
+        assertEquals("Factory", factory.getClass().getSimpleName(), "The created building should be of type Factory");
         factory.construct(); // Should print "Constructing a Factory Building."
     }
 
@@ -48,6 +49,7 @@ public class BuildingFactoryTest {
     public void testCreateStoreBuilding() {
         Building store = BuildingFactory.createBuilding("store");
         assertNotNull(store, "Store building should not be null");
+        assertEquals("Store", store.getClass().getSimpleName(), "The created building should be of type Store");
         store.construct(); // Should print "Constructing a Store Building."
     }
 
@@ -84,5 +86,27 @@ public class BuildingFactoryTest {
             BuildingFactory.createBuilding("");
         });
         assertEquals("Building type cannot be null or empty", emptyException.getMessage());
+    }
+
+    /**
+     * Test to ensure input type is case-insensitive.
+     */
+    @Test
+    @DisplayName("Test Case Insensitivity")
+    public void testCaseInsensitivity() {
+        // Act
+        Building office = BuildingFactory.createBuilding("OfFiCe");
+        Building factory = BuildingFactory.createBuilding("FaCtOrY");
+        Building store = BuildingFactory.createBuilding("SToRe");
+
+        // Assert
+        assertNotNull(office, "Office building should not be null");
+        assertEquals("Office", office.getClass().getSimpleName(), "The created building should be of type Office");
+
+        assertNotNull(factory, "Factory building should not be null");
+        assertEquals("Factory", factory.getClass().getSimpleName(), "The created building should be of type Factory");
+
+        assertNotNull(store, "Store building should not be null");
+        assertEquals("Store", store.getClass().getSimpleName(), "The created building should be of type Store");
     }
 }

@@ -2,9 +2,14 @@ package patterns.singletonTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import patterns.factory.Building;
+import patterns.factory.Office;
+import patterns.factory.Store;
 import patterns.singleton.SimulationController;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * Test class for the Singleton SimulationController.
@@ -27,17 +32,46 @@ public class SimulationControllerTest {
         // Assert that both references point to the same object.
         assertSame(instance1, instance2, "Both instances should be the same");
     }
-
     /**
-     * Test to verify the functionality of a method in the Singleton class.
+     * Test to verify the functionality of adding startups.
      */
     @Test
-    @DisplayName("Verify Singleton Method Functionality")
-    public void testSingletonMethod() {
-        // Fetch the Singleton instance.
+    @DisplayName("Verify Adding Startups")
+    public void testAddStartups() {
+        // Arrange
         SimulationController instance = SimulationController.getInstance();
 
-        // Call a method on the Singleton instance.
-        instance.startSimulation(); // Should print "Starting the Silicon Valley Simulator!"
+        // Create startups
+        Building office = new Office();
+        Building store = new Store();
+
+        // Act
+        instance.addStartup(office);
+        instance.addStartup(store);
+
+        // Assert
+        List<Building> startups = instance.getStartups();
+        assertNotNull(startups, "Startups list should not be null");
+        assertEquals(2, startups.size(), "Startups list size should be 2");
+        assertTrue(startups.contains(office), "Startups list should contain the Office startup");
+        assertTrue(startups.contains(store), "Startups list should contain the Store startup");
     }
+
+    /**
+     * Test to verify the startup list retrieval.
+     */
+    @Test
+    @DisplayName("Verify Retrieving Startups")
+    public void testGetStartups() {
+        // Arrange
+        SimulationController instance = SimulationController.getInstance();
+
+        // Act
+        List<Building> startups = instance.getStartups();
+
+        // Assert
+        assertNotNull(startups, "Startups list should not be null");
+    }
+
+
 }

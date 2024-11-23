@@ -34,6 +34,23 @@ spotbugs {
     toolVersion = '4.7.3' // Ensure compatibility with JDK versions
 }
 
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    reports {
+        html.required.set(true) // Generate HTML report
+        html.outputLocation.set(file("$buildDir/reports/spotbugs/${name}.html")) // Set output location for main
+        xml.required.set(true)
+    }
+}
+
+
+// Custom task to run SpotBugs for both main and test classes
+tasks.register("spotbugsAll") {
+    group = "verification"
+    description = "Run SpotBugs analysis for both main and test classes"
+    dependsOn "spotbugsMain", "spotbugsTest"
+}
+
+
 tasks.named('test') {
     useJUnitPlatform() // Enable JUnit 5 platform for tests
 }

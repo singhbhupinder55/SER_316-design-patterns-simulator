@@ -10,7 +10,6 @@ public class BuildingFactory {
 
     /**
      * Creates a Building object based on the provided type.
-     *
      * @param type the type of building to create ("office", "factory", "store")
      * @return the corresponding Building object
      * @throws IllegalArgumentException if the building type is unknown
