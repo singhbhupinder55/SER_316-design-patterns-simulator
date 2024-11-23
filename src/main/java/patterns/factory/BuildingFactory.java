@@ -1,5 +1,7 @@
 package patterns.factory;
 
+import java.util.Locale;
+
 /**
  * Factory class to create different types of buildings dynamically.
  * Implements the Factory Pattern.
@@ -14,11 +16,22 @@ public class BuildingFactory {
      * @throws IllegalArgumentException if the building type is unknown
      */
     public static Building createBuilding(String type) {
-        return switch (type.toLowerCase()) {
-            case "office" -> new Office();
-            case "factory" -> new Factory();
-            case "store" -> new Store();
-            default -> throw new IllegalArgumentException("Unknown building type: " + type);
-        };
+        if (type == null || type.isEmpty()) {
+            throw new IllegalArgumentException("Building type cannot be null or empty");
+        }
+
+        // Convert the input type to uppercase using Locale.ROOT to avoid locale-specific issues
+        String normalizedType = type.toUpperCase(Locale.ROOT);
+
+        switch (normalizedType) {
+            case "OFFICE":
+                return new Office();
+            case "FACTORY":
+                return new Factory();
+            case "STORE":
+                return new Store();
+            default:
+                throw new IllegalArgumentException("Unknown building type: " + type);
+        }
     }
 }

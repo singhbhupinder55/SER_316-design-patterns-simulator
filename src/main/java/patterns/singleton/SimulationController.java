@@ -1,5 +1,6 @@
 package patterns.singleton;
 
+import java.util.Locale;
 /**
  * Singleton class for managing the simulation.
  * Ensures only one instance of SimulationController exists.
@@ -7,7 +8,8 @@ package patterns.singleton;
 public class SimulationController {
 
     // Step 1: Create a private static variable to hold the single instance.
-    private static SimulationController instance;
+    private static volatile SimulationController instance;
+
 
     // Step 2: Make the constructor private to prevent instantiation from outside.
     private SimulationController() {
@@ -22,11 +24,14 @@ public class SimulationController {
      */
     public static SimulationController getInstance() {
         if (instance == null) {
-            // Lazily initialize the instance when it is first requested.
-            instance = new SimulationController();
+            synchronized (SimulationController.class) {
+                if (instance == null) {
+                    instance = new SimulationController();
+                }
+            }
         }
-        return instance;
-    }
+            return instance;
+        }
 
     /**
      * Example method to demonstrate functionality of the Singleton.
@@ -34,5 +39,20 @@ public class SimulationController {
      */
     public void startSimulation() {
         System.out.println("Starting the Silicon Valley Simulator!");
+    }
+
+    /**
+     * Example of a localized string conversion to avoid locale-sensitive issues.
+     * Converts a given input to uppercase using the default root locale.
+     *
+     * @param input the input string to convert
+     * @return the uppercase version of the input
+     */
+    public String processInput(String input) {
+        if (input == null || input.isEmpty()) {
+            return "Input is empty!";
+        }
+        // Use Locale.ROOT to ensure consistent behavior across locales
+        return input.toUpperCase(Locale.ROOT);
     }
 }

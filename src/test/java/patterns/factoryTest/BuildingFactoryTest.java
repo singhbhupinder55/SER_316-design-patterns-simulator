@@ -65,4 +65,24 @@ public class BuildingFactoryTest {
         // Assert the exception message is as expected.
         assertEquals("Unknown building type: unknown", exception.getMessage());
     }
+
+    /**
+     * Test to ensure invalid inputs are handled correctly.
+     */
+    @Test
+    @DisplayName("Test Null and Empty Building Type")
+    public void testNullAndEmptyBuildingType() {
+
+        // Test null input.
+        Exception nullException = assertThrows(IllegalArgumentException.class, () -> {
+            BuildingFactory.createBuilding(null);
+        });
+        assertEquals("Building type cannot be null or empty", nullException.getMessage());
+
+        // Test empty string input.
+        Exception emptyException = assertThrows(IllegalArgumentException.class, () -> {
+            BuildingFactory.createBuilding("");
+        });
+        assertEquals("Building type cannot be null or empty", emptyException.getMessage());
+    }
 }

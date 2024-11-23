@@ -37,3 +37,10 @@ spotbugs {
 tasks.named('test') {
     useJUnitPlatform() // Enable JUnit 5 platform for tests
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(18)
+    }
+}
+
