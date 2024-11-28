@@ -15,12 +15,19 @@ public class TechGiant {
     private List<Enhancement> activeEnhancements; // Track ongoing enhancements
 
 
-    // Constructor with only the name (defaults funds to 0)
+    /**
+     * Constructor with only the name (defaults funds to $5000).
+     * @param name Name of the Tech Giant
+     */
     public TechGiant(String name) {
         this(name, 5000); // Call the main constructor with default funds
     }
 
-    // Constructor
+    /**
+     * Constructor with specified name and initial funds.
+     * @param name         Name of the Tech Giant
+     * @param initialFunds Initial amount of funds
+     */
     public TechGiant(String name, double initialFunds) {
         this.name = name;
         this.startups = new ArrayList<>();
@@ -37,32 +44,58 @@ public class TechGiant {
         return startups;
     }
 
+
     public double getFunds() {
         return funds;
     }
 
+    /**
+     * Sets the list of startups for the Tech Giant.
+     * @param startups New list of startups
+     */
+    public void setStartups(List<Startup> startups) {
+        this.startups = startups;
+    }
+
+
+    /**
+     * Sets the funds for the Tech Giant.
+     * @param funds New funds amount (non-negative)
+     * @throws IllegalArgumentException if funds are negative
+     */
     public void setFunds(double funds) {
         if (funds < 0) {
             throw new IllegalArgumentException("Funds cannot be negative.");
         }
-        this.funds = funds;
+        this.funds = funds >= 0 ? funds : 0; // Ensure funds cannot go negative
     }
 
-    // Add a startup to the Tech Giant
+    /**
+     * Adds a startup to the Tech Giant.
+     * @param startup Startup to be added
+     */
     public void addStartup(Startup startup) {
         startups.add(startup);
         System.out.println(name + " acquired " + startup.getName() + "!");
     }
 
-    // Remove a startup from the Tech Giant
+    /**
+     * Removes a startup from the Tech Giant.
+     * @param startup Startup to be removed
+     */
     public void removeStartup(Startup startup) {
         startups.remove(startup);
         System.out.println(name + " lost " + startup.getName() + "!");
     }
 
 
-
-    // Invest in a startup
+    /**
+     * Invests in a startup.
+     * Deducts funds and grants experience points to the startup.
+     *
+     * @param startup Startup to invest in
+     * @param amount  Investment amount
+     */
     public void investInStartup(Startup startup, double amount) {
         System.out.println("[DEBUG] " + name + " funds before investment: $" + funds);
         if (funds >= amount) {
@@ -74,7 +107,13 @@ public class TechGiant {
         }
     }
 
-    // Engage in a battle with another Tech Giant
+    /**
+     * Engages in a battle with another Tech Giant.
+     * Selects startups dynamically and handles battle results.
+     *
+     * @param opponent Opposing Tech Giant
+     * @return Winning startup, or null in case of a draw
+     */
     public Startup battle(TechGiant opponent) {
         if (startups.isEmpty()) {
             System.out.println(name + " has no startups left to battle!");
@@ -87,9 +126,13 @@ public class TechGiant {
         }
 
         // Select random startups for battle
-        Startup myStartup = startups.get(0); // Simple selection logic
-        Startup opponentStartup = opponent.getStartups().get(0);
+        Startup myStartup = selectStartupForBattle(); // Simple selection logic
+        Startup opponentStartup = opponent.selectStartupForBattle();
 
+        if (myStartup == null || opponentStartup == null) {
+            System.out.println("No valid startups for battle.");
+            return null;
+        }
         System.out.println(name + " is battling " + opponent.getName() + "!");
         // Determine the winner using the BattleManager
         Startup winner = BattleManager.startBattle(myStartup, opponentStartup, this);
@@ -107,10 +150,29 @@ public class TechGiant {
             System.out.println(opponent.getName() + " acquired " + lost.getName() + " from " + name + "!");
         }
 
+        // After the battle, check if the losing TechGiant has no startups left
+        if (startups.isEmpty()) {
+            System.out.println(name + " has no startups left!");
+        }
+
         return winner;
     }
 
+    /**
+     * Selects the best startup for battle based on revenue.
+     * @return Startup with the highest revenue
+     */
+    public Startup selectStartupForBattle() {
+        return startups.stream()
+                .max((s1, s2) -> Double.compare(s1.getRevenue(), s2.getRevenue()))
+                .orElse(null); // Select the startup with the highest revenue
+    }
 
+
+    /**
+     * Purchases an enhancement for the Tech Giant.
+     * @param enhancement Enhancement to purchase
+     */
     public void purchaseEnhancement(Enhancement enhancement) {
         if (funds >= enhancement.getCost()) {
             funds -= enhancement.getCost();
@@ -121,6 +183,10 @@ public class TechGiant {
         }
     }
 
+    /**
+     * Applies all active enhancements.
+     * Enhancements like loans and revenue boosters are processed.
+     */
     public void applyEnhancements() {
         Iterator<Enhancement> iterator = activeEnhancements.iterator();
         while (iterator.hasNext()) {
@@ -134,9 +200,14 @@ public class TechGiant {
 
                 case "Revenue":
                     for (Startup startup : startups) {
-                        double revenueBoost = startup.getRevenue() * enhancement.getEffectValue();
-                        startup.setRevenue(startup.getRevenue() + revenueBoost);
-                        System.out.println(startup.getName() + " revenue boosted by " + (enhancement.getEffectValue() * 100) + "%.");
+                        double initialRevenue = startup.getRevenue();
+                        double revenueBoost = initialRevenue * enhancement.getEffectValue();
+                        double newRevenue = initialRevenue + revenueBoost;
+                        startup.setRevenue(newRevenue);
+                        // Print out the details of the revenue boost
+                        System.out.println(startup.getName() + " revenue boosted by " +
+                                (enhancement.getEffectValue() * 100) + "%: " +
+                                "From $" + initialRevenue + " to $" + newRevenue + ".");
                     }
                     iterator.remove(); // Remove one-time effect
                     break;
@@ -147,6 +218,12 @@ public class TechGiant {
         }
     }
 
+
+    /**
+     * Gets the list of active enhancements.
+     *
+     * @return List of active enhancements
+     */
     public List<Enhancement> getActiveEnhancements() {
         return activeEnhancements;
     }

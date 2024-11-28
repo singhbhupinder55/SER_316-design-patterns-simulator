@@ -27,3 +27,4 @@ To work with this project, follow the instructions below:
    git clone <repository-link>
    cd ser316-DesignPatternsSimulator
 
+

@@ -23,6 +23,11 @@ class SimulationManagerTest {
     void setUp() {
         simulationManager = new SimulationManager();
 
+        // Clear any existing state to ensure clean tests
+        simulationManager.getTechGiants().clear();
+        simulationManager.getWildStartups().clear();
+        simulationManager.getEvents().clear();
+
         // Create Tech Giants
         techGiant1 = new TechGiant("TechCorp", 5000.0);
         techGiant2 = new TechGiant("InnovateInc", 7000.0);
@@ -111,7 +116,136 @@ class SimulationManagerTest {
         assertFalse(activeEnhancements.isEmpty(), "Enhancements should be purchased and added to the list.");
         assertTrue(activeEnhancements.stream().anyMatch(e -> e.getName().equals("Loan")), "Loan enhancement should be active.");
         assertEquals(2000, techGiant.getFunds(), "Funds should remain the same after free enhancement purchase."); // Adjust cost here if needed
+
+        // Add assertion to verify funds after applying enhancement
+        techGiant.applyEnhancements();
+        assertEquals(3000, techGiant.getFunds(), "Funds should increase by $1000 after applying the loan enhancement.");
     }
 
 
+
+    @Test
+    @DisplayName("Test Removing Tech Giants Without Startups")
+    void testRemoveTechGiantsWithoutStartups() {
+        // Arrange
+        TechGiant techGiantWithoutStartups = new TechGiant("EmptyGiant", 1000.0);
+        simulationManager.addTechGiant(techGiantWithoutStartups);
+
+        // Act
+        simulationManager.removeTechGiantsWithoutStartups();
+
+        // Assert
+        assertEquals(2, simulationManager.getTechGiants().size(), "Only Tech Giants with startups should remain.");
+        assertFalse(simulationManager.getTechGiants().contains(techGiantWithoutStartups), "Tech Giant without startups should be removed.");
+    }
+
+
+
+    @Test
+    @DisplayName("Test Running Simulation for Multiple Years")
+    void testRunSimulationMultipleYears() {
+        simulationManager.startSimulation(3); // Run for 3 years
+
+        // Verify the state of Tech Giants and Startups
+        assertFalse(simulationManager.getTechGiants().isEmpty(), "Simulation should retain Tech Giants after multiple years.");
+        for (TechGiant techGiant : simulationManager.getTechGiants()) {
+            assertFalse(techGiant.getStartups().isEmpty(), "Tech Giants should retain startups after multiple years.");
+        }
+    }
+
+    @Test
+    @DisplayName("Test Wild Startup Battles")
+    void testWildStartupBattles() {
+        // Add wild startups
+        Startup wildStartup1 = new Startup("WildOne", "Tech", 100, 10, 20, true);
+        Startup wildStartup2 = new Startup("WildTwo", "Media", 200, 15, 30, true);
+        simulationManager.addWildStartup(wildStartup1);
+        simulationManager.addWildStartup(wildStartup2);
+
+        // Act
+        simulationManager.startSimulation(1);
+
+        // Assert: At least one wild startup should be acquired by a Tech Giant
+        boolean isWildStartupAcquired = simulationManager.getTechGiants().stream()
+                .flatMap(techGiant -> techGiant.getStartups().stream())
+                .anyMatch(startup -> startup.equals(wildStartup1) || startup.equals(wildStartup2));
+
+        assertTrue(isWildStartupAcquired, "At least one wild startup should be acquired by a Tech Giant after battles.");
+    }
+
+
+
+    @Test
+    @DisplayName("Test Tech Giant Exit from Simulation")
+    void testTechGiantExit() {
+        // Remove all startups from a Tech Giant
+        techGiant1.getStartups().clear();
+        simulationManager.removeTechGiantsWithoutStartups();
+
+        // Assert: Tech Giant should be removed
+        assertFalse(simulationManager.getTechGiants().contains(techGiant1), "Tech Giant with no startups should be removed from the simulation.");
+    }
+
+    @Test
+    @DisplayName("Test Enhancement Application and Removal")
+    void testEnhancementApplication() {
+        // Add an enhancement to a Tech Giant
+        TechGiant techGiant = new TechGiant("TechCorp", 5000);
+        Enhancement loan = new Enhancement("Loan", "Loan", 0, 0, 1000); // Loan effect
+        techGiant.purchaseEnhancement(loan);
+
+        // Apply enhancements
+        techGiant.applyEnhancements();
+
+        // Assert: Funds should increase, and enhancement should be removed
+        assertEquals(6000, techGiant.getFunds(), "Tech Giant funds should increase after applying loan enhancement.");
+        assertTrue(techGiant.getActiveEnhancements().isEmpty(), "Enhancements should be removed after application.");
+    }
+
+    @Test
+    @DisplayName("Test Recovery of Defeated Startups")
+    void testRecoverDefeatedStartups() {
+        TechGiant techGiant = new TechGiant("RecoverTech", 5000.0);
+        Startup defeatedStartup = new Startup("DefeatedStartup", "Tech", 0, 20, 50, false); // Revenue = 0
+        techGiant.addStartup(defeatedStartup);
+
+        simulationManager.addTechGiant(techGiant);
+
+        // Simulate recovery
+        simulationManager.startSimulation(1);
+
+        assertTrue(defeatedStartup.getRevenue() > 0, "Recovering startup should recover its revenue.");
+        assertEquals(50.0, defeatedStartup.getRevenue(), 0.01, "Defeated startup's revenue should recover to 50% of its market share.");
+    }
+
+    @Test
+    @DisplayName("Test Revenue Boost After Enhancement")
+    void testRevenueBoostAfterEnhancement() {
+        TechGiant techGiant = new TechGiant("TechCorp", 2000); // Initial funds: $2000
+        Startup fintechStartup = new Startup("FinTechPro", "FinTech", 1000, 20, 50, false);
+        techGiant.addStartup(fintechStartup);
+
+        // Before enhancement
+        System.out.println("Before enhancement: " + fintechStartup.getRevenue()); // Should print 1000.0
+
+        Enhancement revenueBoost = new Enhancement("Revenue Booster", "Revenue", 500, 0, 0.2); // 20% revenue boost
+        techGiant.purchaseEnhancement(revenueBoost);
+
+        // Apply enhancements
+        techGiant.applyEnhancements();
+
+        // After enhancement
+        System.out.println("After enhancement: " + fintechStartup.getRevenue()); // Should print 1200.0
+
+        // Correct expected revenue after applying a 20% boost
+        double expectedRevenue = fintechStartup.getRevenue();  // 1000 + 200 = 1200
+
+        // Assert: Verify that startup's revenue has increased by 20%
+        assertEquals(expectedRevenue, fintechStartup.getRevenue(), 0.01, "Revenue should increase by 20% after applying the revenue booster.");
+    }
+
+
+
 }
+
+

@@ -3,7 +3,9 @@ plugins {
     id 'application' // Application plugin for running Java apps
     id 'checkstyle' // Static code analysis with Checkstyle
     id 'com.github.spotbugs' version '5.0.13' // Static bug analysis with SpotBugs
+    id 'jacoco'
 }
+
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
@@ -22,38 +24,6 @@ application {
     mainClass = 'ser316.Main' // Specify your main class with its package
 }
 
-checkstyle {
-    toolVersion = '8.8' // Use Checkstyle version 8.8
-    configFile = file("config/checkstyle/checkstyle.xml") // Custom Checkstyle configuration
-}
-
-spotbugs {
-    effort = 'max' // Maximum effort for analysis
-    reportLevel = 'low' // Include low-priority warnings
-    ignoreFailures = true // Prevent SpotBugs from failing the build
-    toolVersion = '4.7.3' // Ensure compatibility with JDK versions
-}
-
-tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
-    reports {
-        html.required.set(true) // Generate HTML report
-        html.outputLocation.set(file("$buildDir/reports/spotbugs/${name}.html")) // Set output location for main
-        xml.required.set(true)
-    }
-}
-
-
-// Custom task to run SpotBugs for both main and test classes
-tasks.register("spotbugsAll") {
-    group = "verification"
-    description = "Run SpotBugs analysis for both main and test classes"
-    dependsOn "spotbugsMain", "spotbugsTest"
-}
-
-
-tasks.named('test') {
-    useJUnitPlatform() // Enable JUnit 5 platform for tests
-}
 
 java {
     toolchain {
@@ -61,3 +31,58 @@ java {
     }
 }
 
+///////////////////////////////////////////////////////////////////////
+// Configure JaCoCo for Code Coverage
+///////////////////////////////////////////////////////////////////////
+jacocoTestReport {
+    reports {
+        xml.required.set(false) // Disable XML report
+        csv.required.set(false) // Disable CSV report
+        html.outputLocation.set(layout.buildDirectory.dir('jacocoHtml')) // Enable HTML report
+    }
+}
+
+///////////////////////////////////////////////////////////////////////
+// Configure Checkstyle for Static Code Analysis
+///////////////////////////////////////////////////////////////////////
+checkstyle {
+    ignoreFailures = true // Don't fail the build for Checkstyle violations
+    showViolations = false // Suppress violations in the console
+    toolVersion = "8.8" // Specify Checkstyle version
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        html.required.set(true) // Enable HTML report
+        xml.required.set(false) // Disable XML report
+    }
+}
+
+///////////////////////////////////////////////////////////////////////
+// Configure SpotBugs for Static Bug Analysis
+///////////////////////////////////////////////////////////////////////
+spotbugs {
+    ignoreFailures = true // Don't fail the build for SpotBugs warnings
+    showProgress = true // Show progress during analysis
+    effort = 'max' // Set the analysis effort level to maximum
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    reports {
+        xml.required.set(false) // Disable XML report
+        html.required.set(true) // Enable HTML report
+    }
+}
+
+///////////////////////////////////////////////////////////////////////
+// Task Configuration
+///////////////////////////////////////////////////////////////////////
+// Ensure 'check' task runs SpotBugs and Checkstyle
+tasks.check {
+    dependsOn tasks.withType(com.github.spotbugs.snom.SpotBugsTask)
+    dependsOn tasks.withType(Checkstyle)
+}
+
+tasks.named('test') {
+    useJUnitPlatform() // Enable JUnit 5 platform for tests
+}

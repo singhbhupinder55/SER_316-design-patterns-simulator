@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import simulation.Startup;
+import helper.MockRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +24,7 @@ public class StartupTest {
         startup2 = new Startup("HealthTech Inc.", "Healthcare", 150, 15, 50, false);
     }
 
+
     @Test
     @DisplayName("Test Getters: Verify initial values are set correctly")
     void testGetters() {
@@ -41,8 +43,8 @@ public class StartupTest {
         assertEquals(120, startup1.getRevenue());
 
         // Test negative revenue handling
-        startup1.setRevenue(-50);
-        assertEquals(0, startup1.getRevenue(), "Revenue should not be negative.");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> startup1.setRevenue(-50));
+        assertEquals("Revenue cannot be negative.", exception.getMessage());
     }
 
     @Test
@@ -85,11 +87,11 @@ public class StartupTest {
     void testGainExperienceAndEvolution() {
         // Garage Startup -> Tech Star
         startup1.gainExperience(5);
-        assertEquals("Tech Star", startup1.getStage());
+        assertEquals("Tech Star", startup1.getStage(), "Startup should evolve to Tech Star at 5 XP.");
 
         // Tech Star -> Unicorn
         startup1.gainExperience(5);
-        assertEquals("Unicorn", startup1.getStage());
+        assertEquals("Unicorn", startup1.getStage(), "Startup should evolve to Unicorn at 10 XP.");
     }
 
     @Test
@@ -121,5 +123,154 @@ public class StartupTest {
         assertTrue(wildStartup.isWild(), "Wild startup should have isWild set to true.");
         assertFalse(regularStartup.isWild(), "Regular startup should have isWild set to false.");
     }
+
+
+    @Test
+    void testTakeDamage() {
+        Startup startup = new Startup("TestStartup", "Social Media", 100.0, 20.0, 30.0, false);
+
+        // Apply Talent Drain damage
+        startup.takeDamage(5.0, "Talent Drain");
+        assertEquals(15.0, startup.getMarketShare(), "Market share should be reduced by 5.0.");
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> startup1.takeDamage(-5, "Talent Drain"));
+        assertEquals("Damage must be non-negative.", exception.getMessage());
+
+        // Apply Trade Secret Theft damage
+        startup.takeDamage(10.0, "Trade Secret Theft");
+        assertEquals(20.0, startup.getNetIncome(), "Net income should be reduced by 10.0.");
+
+        // Apply Price Undercutting damage
+        startup.takeDamage(15.0, "Price Undercutting");
+        assertEquals(85.0, startup.getRevenue(), "Revenue should be reduced by 15.0.");
+    }
+
+    @Test
+    void testEvolution() {
+        Startup startup = new Startup("EvolutionTest", "FinTech", 200.0, 50.0, 100.0, false);
+
+        // Gain experience points and evolve
+        startup.gainExperience(5);
+        assertEquals("Tech Star", startup.getStage(), "Startup should evolve to Tech Star at 5 XP.");
+
+        startup.gainExperience(5);
+        assertEquals("Unicorn", startup.getStage(), "Startup should evolve to Unicorn at 10 XP.");
+    }
+
+    @Test
+    @DisplayName("Test Gain Experience: Negative XP handling")
+    void testGainExperienceNegative() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> startup1.gainExperience(-10));
+        assertEquals("Experience points must be non-negative.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Attack: Verify attacks consider type advantages and critical hits")
+    void testAttack1() {
+        // Simulate attack with type advantage
+        Startup opponent = new Startup("SocialMedia Co.", "Social Media", 100, 20, 30, false);
+        String attackSummary = startup1.attack(opponent);
+        assertTrue(attackSummary.contains("used"), "Attack should generate a summary string.");
+    }
+
+
+    // constructor exception test code
+    @Test
+    @DisplayName("Test Constructor: Valid inputs")
+    void testConstructorValidInputs() {
+        Startup startup = new Startup("Tech Startup", "FinTech", 500.0, 30.0, 100.0, false);
+
+        assertEquals("Tech Startup", startup.getName(), "Name should match the provided input.");
+        assertEquals("FinTech", startup.getType(), "Type should match the provided input.");
+        assertEquals(500.0, startup.getRevenue(), "Revenue should match the provided input.");
+        assertEquals(30.0, startup.getMarketShare(), "Market share should match the provided input.");
+        assertEquals(100.0, startup.getNetIncome(), "Net income should match the provided input.");
+        assertFalse(startup.isWild(), "Wild status should match the provided input.");
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Null name")
+    void testConstructorNullName() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Startup(null, "FinTech", 500.0, 30.0, 100.0, false)
+        );
+        assertEquals("Name cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Empty name")
+    void testConstructorEmptyName() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Startup("", "FinTech", 500.0, 30.0, 100.0, false)
+        );
+        assertEquals("Name cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Null type")
+    void testConstructorNullType() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Startup("Tech Startup", null, 500.0, 30.0, 100.0, false)
+        );
+        assertEquals("Type cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Empty type")
+    void testConstructorEmptyType() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Startup("Tech Startup", "", 500.0, 30.0, 100.0, false)
+        );
+        assertEquals("Type cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Negative revenue")
+    void testConstructorNegativeRevenue() {
+        Startup startup = new Startup("Tech Startup", "FinTech", -100.0, 30.0, 100.0, false);
+        assertEquals(0.0, startup.getRevenue(), "Revenue should be set to 0 for negative input.");
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Negative market share")
+    void testConstructorNegativeMarketShare() {
+        Startup startup = new Startup("Tech Startup", "FinTech", 500.0, -30.0, 100.0, false);
+        assertEquals(0.0, startup.getMarketShare(), "Market share should be set to 0 for negative input.");
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Negative net income")
+    void testConstructorNegativeNetIncome() {
+        Startup startup = new Startup("Tech Startup", "FinTech", 500.0, 30.0, -100.0, false);
+        assertEquals(0.0, startup.getNetIncome(), "Net income should be set to 0 for negative input.");
+    }
+
+    @Test
+    @DisplayName("Test Calculate Damage: Missed attack (first if condition)")
+    void testCalculateDamageMissedAttack() {
+        // MockRandom to ensure `MISS_CHANCE` is triggered
+        MockRandom mockRandom = new MockRandom(0.05, 0); // Simulate a miss (value < MISS_CHANCE)
+        Startup attacker = new Startup("Attacker", "FinTech", 100, 20, 30, false, mockRandom);
+        Startup opponent = new Startup("Defender", "Social Media", 100, 20, 30, false, mockRandom);
+
+        double damage = attacker.testCalculateDamage(opponent, "Price Undercutting");
+
+        assertEquals(0.0, damage, "Damage should be 0 if the attack missed.");
+    }
+
+    @Test
+    @DisplayName("Test Calculate Damage: Type advantage (second if condition)")
+    void testCalculateDamageTypeAdvantage() {
+        // MockRandom to bypass `MISS_CHANCE` and `CRITICAL_HIT_CHANCE`
+        MockRandom mockRandom = new MockRandom(0.5, 0); // Simulate no miss, no critical hit
+        Startup attacker = new Startup("Attacker", "FinTech", 100, 20, 30, false, mockRandom);
+        Startup opponent = new Startup("Defender", "Real Estate", 100, 20, 30, false, mockRandom);
+
+        double damage = attacker.testCalculateDamage(opponent, "Price Undercutting");
+
+        assertEquals(15.0, damage, "Damage should be increased by 50% due to type advantage.");
+    }
+
+
 
 }

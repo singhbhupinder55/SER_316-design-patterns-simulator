@@ -13,9 +13,11 @@ public class Main {
         // Step 1: Initialize Singleton
         System.out.println("Initializing Simulation...");
         SimulationController controller = SimulationController.getInstance();
+        // Highlighting Singleton Pattern**
+        System.out.println("Singleton controller initialized.");
 
         // Step 2: Use Factory to create buildings
-        System.out.println("\nUsing Factory Pattern to create startups::");
+        System.out.println("\nUsing Factory Pattern to create buildings (startups):");
         try {
         Building office = BuildingFactory.createBuilding("office");
             System.out.println("Office startup created.");
@@ -63,6 +65,7 @@ public class Main {
         TechGiant techGiant2 = new TechGiant("Innovators Inc.", 300);
         manager.addTechGiant(techGiant1);
         manager.addTechGiant(techGiant2);
+        System.out.println("Tech Giants added to simulation: " + techGiant1.getName() + ", " + techGiant2.getName());
 
         // Add events to the simulation
         Event corporateTaxCuts = new Event("Corporate Tax Cuts", "Market benefits from tax cuts", "Q1");
@@ -71,6 +74,7 @@ public class Main {
         manager.addEvent(corporateTaxCuts);
         manager.addEvent(economicDownturn);
         manager.addEvent(regulatoryScrutiny);
+        System.out.println("Events added to simulation: " + corporateTaxCuts.getName() + ", " + economicDownturn.getName() + ", " + regulatoryScrutiny.getName());
 
         // Add startups to tech giants
         // HealthTech Inc.: Revenue $100K, Market Share 10%, Net Income $20K
@@ -82,6 +86,7 @@ public class Main {
         // Add wild startups to the simulation
         manager.addWildStartup(new Startup("SocialWild Inc.", "Social Media", 50, 15, 10, true));
         manager.addWildStartup(new Startup("RealWild Co.", "Real Estate", 70, 10, 5, true));
+        System.out.println("Wild Startups added to simulation.");
 
         // Start simulation for 1 year
         System.out.println("\nStarting Simulation...");

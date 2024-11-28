@@ -139,4 +139,77 @@ public class EventTest {
         assertEquals(30, startups.get(1).getMarketShare(), "Market share should not change.");
         assertEquals(15, startups.get(1).getNetIncome(), "Net income should not change.");
     }
+
+
+    @Test
+    @DisplayName("Test Constructor: Null name")
+    void testConstructorNullName() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event(null, "Description", "Q1")
+        );
+        assertEquals("Event name cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Empty description")
+    void testConstructorEmptyDescription() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event("EventName", "", "Q1")
+        );
+        assertEquals("Event description cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Null quarter")
+    void testConstructorNullQuarter() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event("EventName", "Description", null)
+        );
+        assertEquals("Event quarter cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Economic Downturn: Zero revenue")
+    void testEconomicDownturnZeroRevenue() {
+        // Arrange
+        startups.get(0).setRevenue(0); // Healthcare
+        startups.get(1).setRevenue(0); // FinTech
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(0, startups.get(0).getRevenue(), "Healthcare startup with 0 revenue should remain unaffected.");
+        assertEquals(0, startups.get(1).getRevenue(), "FinTech startup with 0 revenue should remain unaffected.");
+    }
+
+    @Test
+    @DisplayName("Test Regulatory Scrutiny: Zero market share")
+    void testRegulatoryScrutinyZeroMarketShare() {
+        // Arrange
+        startups.get(0).setMarketShare(0); // Healthcare
+        Event event = new Event("Regulatory Scrutiny", "Market faces regulatory challenges", "Q3");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(0, startups.get(0).getMarketShare(), "Startup with 0 market share should remain unaffected.");
+    }
+
+    @Test
+    @DisplayName("Test Economic Downturn: Unrecognized type")
+    void testEconomicDownturnUnrecognizedType() {
+        // Arrange
+        startups.add(new Startup("TechStartup", "UnknownType", 200, 10, 50, false));
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(200, startups.get(2).getRevenue(), "Startup with unrecognized type should remain unaffected.");
+    }
+
 }

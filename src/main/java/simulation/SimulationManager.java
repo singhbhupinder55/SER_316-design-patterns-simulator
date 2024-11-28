@@ -15,19 +15,28 @@ public class SimulationManager {
     private List<Event> events;        // List of events for the simulation
     private List<Startup> wildStartups; // List of wild startups in the market
 
-    // Constructor
+    /**
+     * Constructs a SimulationManager to manage Tech Giants, events, and startups.
+     */
     public SimulationManager() {
         techGiants = new ArrayList<>();
         events = new ArrayList<>();
         wildStartups = new ArrayList<>(); // Initialize wild startups
     }
 
-    // Add a Tech Giant to the simulation
+    /**
+     * Adds a Tech Giant to the simulation.
+     * @param techGiant The Tech Giant to add.
+     */
     public void addTechGiant(TechGiant techGiant) {
         techGiants.add(techGiant);
+        log(techGiant.getName() + " added to the simulation.");
     }
 
-    // Add an event to the simulation
+    /**
+     * Adds an event to the simulation.
+     * @param event The event to add.
+     */
     public void addEvent(Event event) {
         events.add(event);
     }
@@ -47,61 +56,75 @@ public class SimulationManager {
     public List<Event> getEvents() {
         return events;
     }
-    // Add a wild startup to the simulation
+
+
+    /**
+     * Adds a wild startup to the simulation.
+     * @param startup The wild startup to add.
+     */
     public void addWildStartup(Startup startup) {
         wildStartups.add(startup);
-        System.out.println("[DEBUG] Added Wild Startup: " + startup.getName() + " with Revenue: " + startup.getRevenue());
+        log("Added Wild Startup: " + startup.getName() + " with Revenue: " + startup.getRevenue());
     }
 
-    // Get wild startups
+    /**
+     * Retrieves the list of wild startups.
+     * @return List of wild startups.
+     */
     public List<Startup> getWildStartups() {
         return wildStartups;
 
     }
 
-    // Logging Method for Debugging**
+    /**
+     * Logs a simulation-related message to the console.
+     * @param message The message to log.
+     */
     private void log(String message) {
         System.out.println("[SIMULATION LOG] " + message);
     }
 
-    // Start the simulation
+    /**
+     * Recovers defeated startups in the next cycle.
+     * Restores their revenue to 50% of the original starting revenue.
+     */
+    private void recoverDefeatedStartups() {
+        int recoveredCount = 0;
+        for (TechGiant techGiant : techGiants) {
+            for (Startup startup : techGiant.getStartups()) {
+                if (startup.getRevenue() <= 0) {
+                    // Recover revenue based on market share
+                    double recoveryAmount = startup.getMarketShare() * 2.5; // Example recovery logic
+                    startup.setRevenue(recoveryAmount);
+                    recoveredCount++;
+                }
+            }
+        }
+        if (recoveredCount > 0){
+            log("Recovered " + recoveredCount + " defeated startups.");
+        }
+    }
+
+
+    /**
+     * Starts the simulation for a specified number of years.
+     * @param years The number of years to run the simulation.
+     */
     public void startSimulation(int years) {
-        System.out.println("[DEBUG] Starting simulation for " + years + " year(s).");
         for (int year = 1; year <= years; year++) {
             System.out.println("\n--- Year " + year + " ---");
 
             for (int quarter = 1; quarter <= 4; quarter++) {
                 System.out.println("\n--- Quarter " + quarter + " ---");
-                for (TechGiant techGiant : techGiants) {  //remove debug
-                    System.out.println("[DEBUG] " + techGiant.getName() + " funds at the start of Q" + quarter + ": $" + techGiant.getFunds());
-                }
                 String currentQuarter = "Q" + quarter;
 
                 // Trigger events for the quarter
                 for (Event event : events) {
                     if (event.getQuarter().equalsIgnoreCase(currentQuarter)) {
-                        System.out.println("[DEBUG] Applying event: " + event.getName() + " (" + currentQuarter + ")");
-
-
-                        // Before applying effects   debug remove these both for loops
-                        for (TechGiant techGiant : techGiants) {
-                            for (Startup startup : techGiant.getStartups()) {
-                                System.out.println("[DEBUG] Before Event: " + startup.getName() + " Revenue: " + startup.getRevenue());
-                            }
-                        }
-
+                        event.applyEffects(wildStartups);
                         // Apply effects to tech giant startups
                         for (TechGiant techGiant : techGiants) {
                             event.applyEffects(techGiant.getStartups());
-                        }
-                        // Apply effects to wild startups
-                        event.applyEffects(wildStartups);
-
-                        // After applying effects    debig remove these both for lops
-                        for (TechGiant techGiant : techGiants) {
-                            for (Startup startup : techGiant.getStartups()) {
-                                System.out.println("[DEBUG] After Event: " + startup.getName() + " Revenue: " + startup.getRevenue());
-                            }
                         }
                     }
                 }
@@ -117,57 +140,90 @@ public class SimulationManager {
 
                 // Quarterly actions
                 if (quarter == 4) { // Competitive battles in Q4
-                    for (int i = 0; i < techGiants.size() - 1; i++) {
-                        for (int j = i + 1; j < techGiants.size(); j++) {
-                            TechGiant giant1 = techGiants.get(i);
-                            TechGiant giant2 = techGiants.get(j);
-
-                            Startup winner = giant1.battle(giant2);
-                            if (winner != null) {
-                                System.out.println(winner.getName() + " won the battle!");
-                            }
-                        }
-                    }
+                    handleTechGiantBattles();
                 }
+                // **Remove Tech Giants with No Startups**
+                removeTechGiantsWithoutStartups();
+
+                // Recover defeated startups
+                recoverDefeatedStartups(); // Call recovery logic
             }
         }
 
         System.out.println("\nSimulation Completed!");
     }
 
-    //Process Odd Quarter Actions
+
+    /**
+     * Handles Tech Giant vs. Tech Giant battles in Q4.
+     */
+    private void handleTechGiantBattles() {
+        for (int i = 0; i < techGiants.size() - 1; i++) {
+            for (int j = i + 1; j < techGiants.size(); j++) {
+                TechGiant giant1 = techGiants.get(i);
+                TechGiant giant2 = techGiants.get(j);
+
+                Startup winner = giant1.battle(giant2);
+                if (winner != null) {
+                    log(winner.getName() + " from " + (winner.isWild() ? "wild startups" : "Tech Giant") + " won the battle!");
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes Tech Giants with no startups from the simulation.
+     */
+    public void removeTechGiantsWithoutStartups() {
+        Iterator<TechGiant> iterator = techGiants.iterator();
+        while (iterator.hasNext()) {
+            TechGiant techGiant = iterator.next();
+            if (techGiant.getStartups().isEmpty()) {
+                iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Processes odd-quarter actions for a Tech Giant, such as building startups and making investments.
+     * @param techGiant The Tech Giant performing actions.
+     */
     private void processOddQuarterActions(TechGiant techGiant) {
-        System.out.println("[DEBUG] Processing odd quarter actions for: " + techGiant.getName());
         offerEnhancements(techGiant); // Offer enhancements
         buildNewStartup(techGiant); // **Try to build a new startup**
 
         if (!techGiant.getStartups().isEmpty()) {
             Startup startup = techGiant.getStartups().get(0); // Simple logic: invest in the first startup
-            log(techGiant.getName() + " invests in " + startup.getName() + "!");
-            System.out.println("[DEBUG] " + techGiant.getName() + " funds before investment: $" + techGiant.getFunds());   //debug remove
             techGiant.investInStartup(startup, 50); // Invest $50 (boost market share)
-            System.out.println("[DEBUG] " + techGiant.getName() + " funds before investment: $" + techGiant.getFunds());   //debug remove
         }
     }
 
-    // Handle Wild Startup Battles**
+    /**
+     * Handles battles between Tech Giants and wild startups.
+     */
     private void processWildStartupBattles() {
-        System.out.println("[DEBUG] Processing wild startup battles.");   //remove debug
         if (!wildStartups.isEmpty()) {
             Iterator<Startup> iterator = wildStartups.iterator();
             while (iterator.hasNext()) {
-                Startup wildStartup = iterator.next(); // Get the next wild startup
+                Startup wildStartup = iterator.next();
                 for (TechGiant techGiant : techGiants) {
                     if (!techGiant.getStartups().isEmpty()) {
                         log(techGiant.getName() + " battles a wild startup: " + wildStartup.getName());
-                        System.out.println("[DEBUG] " + wildStartup.getName() + " Revenue before battle: " + wildStartup.getRevenue());   //debug
                         Startup winner = BattleManager.startBattle(techGiant.getStartups().get(0), wildStartup, techGiant);
 
                         if (winner != wildStartup) {
-                            // Wild startup is acquired by the Tech Giant
+                            // Wild startup is acquired
                             iterator.remove(); // Safely remove wild startup
                             techGiant.addStartup(wildStartup);
-                            log(techGiant.getName() + " acquired wild startup: " + wildStartup.getName());
+
+                            // Deduct financial cost
+                            double acquisitionCost = 500; // Example cost
+                            if (techGiant.getFunds() >= acquisitionCost) {
+                                techGiant.setFunds(techGiant.getFunds() - acquisitionCost);
+                                log(techGiant.getName() + " paid $" + acquisitionCost + " to acquire " + wildStartup.getName());
+                            } else {
+                                log(techGiant.getName() + " could not afford to acquire " + wildStartup.getName() + ".");
+                            }
                         } else {
                             log("Wild startup " + wildStartup.getName() + " survived the battle!");
                         }
@@ -179,15 +235,14 @@ public class SimulationManager {
     }
 
 
-    // Build New Startup with Specific Conditions**
+
+    /**
+     * Builds a new startup for a Tech Giant if sufficient funds are available.
+     * @param techGiant The Tech Giant attempting to build a startup.
+     */
     public void buildNewStartup(TechGiant techGiant) {
-        System.out.println("[DEBUG] Attempting to build startup for: " + techGiant.getName());
-        System.out.println("[DEBUG] " + techGiant.getName() + " funds before building startup: $" + techGiant.getFunds());
         if (techGiant.getFunds() >= 1000) {
-            String startupType = "General";
-            if (techGiant.getFunds() > 5000) { // **Condition: Premium startup for higher funds**
-                startupType = "Premium";
-            }
+            String startupType = techGiant.getFunds() > 5000 ? "Premium" : "General";
 
             Startup newStartup = new Startup(
                     techGiant.getName() + " Startup #" + (techGiant.getStartups().size() + 1),
@@ -201,23 +256,23 @@ public class SimulationManager {
             techGiant.addStartup(newStartup);
             techGiant.setFunds(techGiant.getFunds() - 1000); // Deduct building cost
             log(techGiant.getName() + " built a new startup: " + newStartup.getName());
-            System.out.println("[DEBUG] " + techGiant.getName() + " funds after building: $" + techGiant.getFunds());
         } else {
             log(techGiant.getName() + " does not have enough funds to build a new startup.");
         }
     }
 
-
+    /**
+     * Offers enhancements to a Tech Giant.
+     * @param techGiant The Tech Giant receiving enhancement offers.
+     */
     public void offerEnhancements(TechGiant techGiant) {
         Enhancement loan = new Enhancement("Loan", "Loan", 0, 0, 1000); // $1000 loan
         Enhancement revenueBooster = new Enhancement("Revenue Booster", "Revenue", 500, 0, 0.2); // 20% boost
 
-        System.out.println(techGiant.getName() + " can purchase the following enhancements:");
-        System.out.println("1. " + loan.getName() + ": Adds $" + loan.getEffectValue() + ".");
-        System.out.println("2. " + revenueBooster.getName() + ": Boosts revenue by 20% for $500.");
-
-        // Simple purchase logic (e.g., randomly choose)
-        techGiant.purchaseEnhancement(loan); // Example logic
+        log(techGiant.getName() + " can purchase the following enhancements:");
+        log("1. " + loan.getName() + ": Adds $" + loan.getEffectValue() + ".");
+        log("2. " + revenueBooster.getName() + ": Boosts revenue by 20% for $500.");
+        techGiant.purchaseEnhancement(loan);
     }
 
 

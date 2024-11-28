@@ -14,7 +14,6 @@ public class Event {
 
     /**
      * Constructs an Event with the given name, description, and quarter.
-     *
      * @param name        Name of the event
      * @param description Description of the event
      * @param quarter     Quarter in which the event occurs
@@ -34,27 +33,45 @@ public class Event {
         this.quarter = quarter;
     }
 
-    // Getter methods
+    /**
+     * Retrieves the name of the event.
+     * @return The name of the event.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Retrieves the description of the event.
+     * @return The description of the event.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Retrieves the quarter during which the event occurs.
+     * @return The quarter (e.g., "Q1").
+     */
     public String getQuarter() {
         return quarter;
     }
 
     /**
-     * Applies the event's effects on the list of startups.
-     *
-     * @param startups the list of startups affected by the event
+     * Applies the event's effects to a list of startups.
+     * Logs the changes to startups before and after the event is applied.
+     * @param startups The list of startups affected by the event.
      */
     public void applyEffects(List<Startup> startups) {
         System.out.println("Applying event: " + name + " (" + quarter + ")");
         for (Startup startup : startups) {
+
+
+            // Added logging to trace startup effects
+            System.out.println("Before Event: " + startup.getName() +
+                    " | Revenue: " + startup.getRevenue() +
+                    " | Market Share: " + startup.getMarketShare());
+
 
             switch (name) {
                 case "Corporate Tax Cuts":
@@ -71,13 +88,18 @@ public class Event {
 
                 default:
                     System.out.println("No specific effects implemented for event: " + name);
+
+
             }
+            // Added post-event logging
+            System.out.println("After Event: " + startup.getName() +
+                    " | Revenue: " + startup.getRevenue() +
+                    " | Market Share: " + startup.getMarketShare());
         }
     }
 
     /**
      * Handles the effects of the "Corporate Tax Cuts" event (neutral effect).
-     *
      * @param startup the affected startup
      */
     private void handleCorporateTaxCuts(Startup startup) {
@@ -86,11 +108,11 @@ public class Event {
 
     /**
      * Handles the effects of the "Economic Downturn" event.
-     *
-     * @param startup the affected startup
+     * Boosts or reduces revenue depending on the type of the startup.
+     * @param startup The startup affected by the event.
      */
     private void handleEconomicDownturn(Startup startup) {
-        System.out.println("Before Event: " + startup.getName() + " Revenue: " + startup.getRevenue());
+
         switch (startup.getType().toLowerCase()) {
 
             case "healthcare":
@@ -100,9 +122,9 @@ public class Event {
                 break;
 
             case "fintech":
-                double revenueLoss = startup.getRevenue() * 0.2; //  Reduce revenue by 20%
-                startup.setRevenue(startup.getRevenue() - revenueLoss); //  Update revenue
-                System.out.println(startup.getName() + " reduced revenue by 20% due to " + name + ".");
+                double genericImpact = startup.getRevenue() * 0.2; //  Reduce revenue by 20%
+                startup.setRevenue(startup.getRevenue() - genericImpact); //  Update revenue
+                System.out.println(startup.getName() + " experienced a slight revenue decrease due to " + name + ".");
                 break;
 
             default:
@@ -112,7 +134,7 @@ public class Event {
 
     /**
      * Handles the effects of the "Regulatory Scrutiny" event.
-     *
+     * Reduces market share for startups with high market share and boosts smaller startups.
      * @param startup the affected startup
      */
     private void handleRegulatoryScrutiny(Startup startup) {
