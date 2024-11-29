@@ -65,3 +65,25 @@ Here is a screenshot of the Jacoco report:
 - Helper and Singleton Packages: Low coverage in the helper package, with 0% coverage.
 
 
+## ScreenShots of Junit Report
+Here is a screenshot of the Junit report:
+![Junit Report1](images/Junit1.png)
+![Junit Report2](images/Junit2.png)
+
+## Junit Report Summary:
+
+- The JUnit reports show that all tests in the project have successfully passed with a 100% success rate.
+
+- The first report includes a summary of 102 tests, all passing with no failures or ignored tests. It shows individual test packages, including patterns.factoryTest, patterns.singletonTest, and simulationTest, each with 100% success.
+
+- The second report provides a detailed breakdown of the test classes, showing that each test class (e.g., BuildingFactoryTest, SimulationControllerTest, StartupTest, etc.) executed 100% successfully with no failures or ignored tests. The tests were completed in a total duration of 0.242 seconds.
+
+- These reports confirm that the tests have been properly executed, covering all the critical components of the project with a perfect pass rate.
+
+
+
+
+
+
+
+
