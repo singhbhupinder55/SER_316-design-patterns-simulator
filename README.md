@@ -1,3 +1,5 @@
+## Submission A
+- Note: submission B README.md data is below:
 # Design Patterns Simulator
 
 This repository contains the basic setup for the **Design Patterns Simulator** project, created as part of the SER316 coursework at Arizona State University. The project aims to implement and demonstrate various design patterns in Java.
@@ -27,6 +29,9 @@ To work with this project, follow the instructions below:
    git clone <repository-link>
    cd siliconvalleysimulator-DesignPatternsSimulator
 
+
+
+## Submission B data
 
 ## ScreenShots of SpotBugs Report
 
@@ -82,6 +87,61 @@ Here is a screenshot of the Junit report:
 
 
 
+## Design Patterns Used and Requirements Fulfilled
+
+In this project, I implemented the following three design patterns:
+
+# Singleton Pattern
+
+- **Explanation**: The Singleton Pattern ensures that a class has only one instance and provides a global point of access to that instance. It is useful when only one instance of a class is required to coordinate actions across the system (e.g., logging, configuration).
+   
+- **Requirement Fulfilled**:
+- *Global Access to Instance*: The Singleton pattern was applied in the SimulationController class to manage the entire simulation. This ensures that only one instance of the SimulationController is active and accessible throughout the simulation, thus avoiding the need for multiple conflicting instances.
+- *Controlled Instance Creation*: The pattern ensures the instance is created only once and can be reused throughout the simulation. This provides efficient resource management and avoids conflicts.
+
+# Factory Pattern
+
+- **Explanation**: The Factory Pattern provides an abstraction for object creation. It allows the system to create objects without specifying the exact class of object to be created. This pattern is particularly useful when the object creation process is complex or when a system needs to create many different objects of the same type.
+- **Requirement Fulfilled**:
+- *Object Creation Abstraction*: The Factory pattern was implemented in the BuildingFactory class to create different types of buildings (e.g., Office, Store, and Factory). The client code does not need to know the specific details of how the buildings are created, making it easier to add new types of buildings in the future without modifying existing code.
+- *Simplifying Object Management*: By centralizing the object creation logic, the Factory pattern promotes a cleaner, more maintainable codebase. 
+
+
+
+# Strategy Pattern
+- **Explanation**: The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern allows a client to choose the appropriate algorithm at runtime, enabling dynamic behavior changes in a class.
+- **Requirement Fulfilled**:
+   
+- *Dynamic Behavior Change*: In the Context class, the Strategy pattern is applied to switch between different market strategies (Defensive or Aggressive) for startups during the simulation. This allows for flexible adaptation to different scenarios and demonstrates the pattern’s core principle of allowing the behavior to change dynamically at runtime.
+- *Simplified Algorithm Handling*: By encapsulating strategies (like DefensiveStrategy and AggressiveStrategy) in separate classes, the system can easily switch between them without modifying the context or the startup's core logic, promoting the Open/Closed principle.
+
+
+## Sources Used to Acquire Knowledge about the Design Patterns
+To effectively implement the design patterns in this project, I referred to the following resources:
+
+# Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four)
+
+- **How it Helped**: This book provided in-depth knowledge about the foundational design patterns, including Singleton, Factory, and Strategy. The examples and explanations helped clarify the theoretical underpinnings of the patterns, their use cases, and implementation strategies.
+- **Application in Project**: I used this book to better understand how to apply the Singleton pattern in a global context (e.g., managing the simulation) and to design the Factory and Strategy patterns to facilitate flexibility and abstraction in the project.
+
+# Head First Design Patterns (Eric Freeman & Elisabeth Robson)
+
+- **How it Helped**: This book offers a beginner-friendly and highly visual approach to understanding design patterns with practical examples in Java. It made the implementation of design patterns, especially the Factory and Strategy patterns, more approachable.
+- **Application in Project**: I used the book's practical examples to understand the best practices for implementing the Factory pattern and adapting it to the specific needs of our simulation project.
+
+
+# Refactoring Guru (refactoring.guru)
+
+- **How it Helped**: Refactoring Guru provided clear, concise tutorials and examples for understanding and applying design patterns. The website includes simple explanations along with code examples, making it easy to visualize how patterns could be structured in real projects.
+- **Application in Project**: I used this website to validate my understanding of the Strategy pattern, particularly in terms of how to structure the behavior-changing classes (DefensiveStrategy and AggressiveStrategy) and make them interchangeable.
+
+# Java Documentation
+
+- **How it Helped**: The official Java documentation provided valuable insights into abstract classes, interfaces, and static methods, which were integral to implementing patterns like Factory and Singleton in Java.
+- **Application in Project**: The Java documentation was particularly useful when implementing the Factory pattern, where abstract classes and interfaces were used to define the structure of objects to be created.
+
+# Summary
+These resources provided a solid foundation for understanding the design patterns used in the project and helped in applying them effectively within the context of the Design Patterns Simulator. Each pattern was carefully chosen to meet specific project requirements and to maintain flexibility and ease of maintenance in the simulation system.
 
 
 
