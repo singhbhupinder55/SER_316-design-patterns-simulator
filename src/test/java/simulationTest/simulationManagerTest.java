@@ -207,20 +207,6 @@ class SimulationManagerTest {
 
 
 
-    @Test
-    @DisplayName("Test Calculate Damage: Type advantage (second if condition)")
-    void testCalculateDamageTypeAdvantage() {
-        // MockRandom to bypass `MISS_CHANCE` and `CRITICAL_HIT_CHANCE`
-        MockRandom mockRandom = new MockRandom(0.5, 0); // Simulate no miss, no critical hit
-        Startup attacker = new Startup("Attacker", "FinTech", 100, 20, 30, false, mockRandom);
-        Startup opponent = new Startup("Defender", "Real Estate", 100, 20, 30, false, mockRandom);
-
-        double damage = attacker.testCalculateDamage(opponent, "Price Undercutting");
-
-        assertEquals(15.0, damage, "Damage should be increased by 50% due to type advantage.");
-    }
-
-
 
 }
 

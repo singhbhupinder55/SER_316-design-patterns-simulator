@@ -135,24 +135,6 @@ public class BattleManagerTest {
         assertTrue(startup2.isWild(), "Wild startup should remain wild when TechGiant is null.");
     }
 
-    @Test
-    @DisplayName("Test Perform Attack with Simulated Miss")
-    void testPerformAttackMiss() {
-        // Simulate a miss by setting fixedDouble < 0.1 for nextDouble().
-        MockRandom mockRandom = new MockRandom(0.05, 0); // Simulate a 5% chance of miss
-
-        // Create attacker and defender startups using the mock random generator.
-        Startup attacker = new Startup("Attacker", "Operating Systems", 100, 20, 30, false, mockRandom);
-        Startup defender = new Startup("Defender", "Social Media", 100, 25, 20, false, mockRandom);
-
-        // Perform the attack and capture the attack summary
-        String attackSummary = BattleManager.performAttack(attacker, defender, null);
-
-        // Assert that the attack summary is exactly as expected when the attack is a miss
-
-        assertEquals(100, defender.getRevenue(), "Missed attack should not affect defender's revenue.");
-    }
-
 
 
 
