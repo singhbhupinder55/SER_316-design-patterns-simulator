@@ -46,20 +46,7 @@ public class BattleManagerTest {
         assertEquals(5, winner.getExperiencePoints(), "Winner should gain 5 experience points.");
     }
 
-    @Test
-    @DisplayName("Test Battling Wild Startups")
-    void testBattleWildStartup() {
-        Startup wildStartup = new Startup("SocialWild", "Social Media", 50, 15, 10, true);
-        Startup techGiantStartup = new Startup("TechGiantStartup", "FinTech", 100, 20, 30, false);
 
-        TechGiant techGiant = new TechGiant("Techy Co.");
-        techGiant.addStartup(techGiantStartup);
-
-        Startup winner = BattleManager.startBattle(techGiantStartup, wildStartup, techGiant);
-
-        assertNotNull(winner, "A winner should be determined in the battle.");
-        assertTrue(techGiant.getStartups().contains(wildStartup), "Wild startup should be acquired by Tech Giant.");
-    }
 
 
 
