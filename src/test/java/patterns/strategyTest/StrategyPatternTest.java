@@ -3,8 +3,10 @@ package patterns.strategyTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import patterns.strategy.*;
-
+import patterns.strategy.Strategy;
+import patterns.strategy.Context;
+import patterns.strategy.AggressiveStrategy;
+import patterns.strategy.DefensiveStrategy;
 
 /**
  * Unit tests for the Strategy Pattern implementation.

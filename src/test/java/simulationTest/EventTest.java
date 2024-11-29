@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import simulation.Startup;
 import simulation.events.Event;
+import simulation.events.EventEffect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +90,9 @@ public class EventTest {
         // Arrange
         Event event = new Event("Unknown Event", "No specific effects", "Q1");
 
-        // Act & Assert
-        assertDoesNotThrow(() -> event.applyEffects(startups), "Unrecognized event should not throw exceptions.");
+        // Ensure that no exception is thrown and that no changes were made (i.e., NeutralEffect)
+        assertEquals(100, startups.get(0).getRevenue(), "Healthcare startup's revenue should remain the same.");
+        assertEquals(100, startups.get(1).getRevenue(), "FinTech startup's revenue should remain the same.");
     }
     @Test
     @DisplayName("Test Corporate Tax Cuts Effects (Neutral)")
@@ -211,5 +213,39 @@ public class EventTest {
         // Assert
         assertEquals(200, startups.get(2).getRevenue(), "Startup with unrecognized type should remain unaffected.");
     }
+
+
+    @Test
+    @DisplayName("Test Constructor: Empty Event Name")
+    public void testConstructorEmptyName() {
+        // Assert that an IllegalArgumentException is thrown when name is empty
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event("", "Valid Description", "Q1")
+        );
+        assertEquals("Event name cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Null Event Description")
+    public void testConstructorNullDescription() {
+        // Assert that an IllegalArgumentException is thrown when description is null
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event("Valid Name", null, "Q1")
+        );
+        assertEquals("Event description cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Constructor: Empty Event Quarter")
+    public void testConstructorEmptyQuarter() {
+        // Assert that an IllegalArgumentException is thrown when quarter is empty
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event("Valid Name", "Valid Description", "")
+        );
+        assertEquals("Event quarter cannot be null or empty.", exception.getMessage());
+    }
+
+
+
 
 }

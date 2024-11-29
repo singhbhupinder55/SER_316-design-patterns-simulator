@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import simulation.Startup;
 import helper.MockRandom;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -246,7 +247,62 @@ public class StartupTest {
     }
 
 
+    @Test
+    @DisplayName("Test Constructor with Random Parameter")
+    void testConstructorWithRandom() {
+        // Create a Random instance to pass to the constructor
+        Random random = new Random();
 
+        // Initialize Startup with Random instance
+        Startup startup = new Startup("Techy Co.", "FinTech", 100.0, 20.0, 30.0, false, random);
+
+        // Assert that the Startup instance was created with the provided values
+        assertEquals("Techy Co.", startup.getName(), "Name should match the provided input.");
+        assertEquals("FinTech", startup.getType(), "Type should match the provided input.");
+        assertEquals(100.0, startup.getRevenue(), "Revenue should match the provided input.");
+        assertEquals(20.0, startup.getMarketShare(), "Market share should match the provided input.");
+        assertEquals(30.0, startup.getNetIncome(), "Net income should match the provided input.");
+        assertFalse(startup.isWild(), "Wild status should match the provided input.");
+    }
+
+    @Test
+    @DisplayName("Test setMarketShare: Verify exception is thrown for negative market share")
+    void testSetMarketShareNegative() {
+        // Create a new Startup instance
+        Startup startup = new Startup("Techy Co.", "FinTech", 100.0, 20.0, 30.0, false);
+
+        // Act & Assert: Verify exception is thrown when setting negative market share
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                startup.setMarketShare(-10.0)
+        );
+
+        // Assert: Verify the exception message is correct
+        assertEquals("Market share cannot be negative.", exception.getMessage(),
+                "Exception message should match the expected message.");
+    }
+
+
+
+    @Test
+    @DisplayName("Test Attack: Null opponent should throw IllegalArgumentException")
+    void testAttackNullOpponent() {
+        // Act and Assert: The attack method should throw IllegalArgumentException when the opponent is null
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                startup1.attack(null)
+        );
+        assertEquals("Opponent cannot be null.", exception.getMessage(), "Exception message should match.");
+    }
+
+    @Test
+    @DisplayName("Test Attack: Valid attack should not throw exception")
+    void testAttackValidOpponent() {
+        // Act: Perform a valid attack
+        String result = startup1.attack(startup2);
+
+        // Assert: The result should be a valid string with attack details
+        assertTrue(result.contains("used"), "Attack summary should contain 'used'.");
+        assertTrue(result.contains(startup2.getName()), "Attack should mention the opponent's name.");
+    }
 
 
 

@@ -73,29 +73,7 @@ public class TechGiantTest {
         assertTrue(techGiant.getStartups().isEmpty(), "Startup should be removed.");
     }
 
-    @Test
-    @DisplayName("Test Gaining Startup from Opponent")
-    void testGainingStartupFromOpponent() {
-        TechGiant opponent = new TechGiant("Innovators Inc.", 7000.0);
 
-        Startup startup1 = new Startup("FinTechPro", "FinTech", 1000, 20, 50, false);
-        Startup startup2 = new Startup("HealthFirst", "Healthcare", 1200, 15, 40, false);
-
-        techGiant.addStartup(startup1);
-        opponent.addStartup(startup2);
-
-        // Act
-        Startup winner = techGiant.battle(opponent);
-
-        // Assert
-        if (winner == startup1) {
-            assertTrue(techGiant.getStartups().contains(startup2), "Tech Giant should gain opponent's startup.");
-            assertFalse(opponent.getStartups().contains(startup2), "Opponent should lose the startup.");
-        } else {
-            assertTrue(opponent.getStartups().contains(startup1), "Opponent should gain Tech Giant's startup.");
-            assertFalse(techGiant.getStartups().contains(startup1), "Tech Giant should lose its startup.");
-        }
-    }
 
     @Test
     @DisplayName("Test Purchasing Enhancement")

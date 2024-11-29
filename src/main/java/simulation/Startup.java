@@ -187,18 +187,6 @@ public class Startup {
         this.marketShare = marketShare;
     }
 
-    /**
-     * Sets the net income of the startup.
-     * @param netIncome The new net income value.
-     * @throws IllegalArgumentException if the net income is negative.
-     */
-
-    public void setNetIncome(double netIncome) {
-        if (netIncome < 0) {
-            throw new IllegalArgumentException("Net income cannot be negative.");
-        }
-        this.netIncome = netIncome;
-    }
 
     /**
      * Applies damage to a specific attribute of the startup based on the attack type.

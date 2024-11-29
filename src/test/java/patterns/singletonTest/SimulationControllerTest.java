@@ -73,5 +73,13 @@ public class SimulationControllerTest {
         assertNotNull(startups, "Startups list should not be null");
     }
 
+    @Test
+    @DisplayName("Verify Constructor Initialization")
+    public void testConstructorInitialization() {
+        SimulationController instance = SimulationController.getInstance();
+        List<Building> startups = instance.getStartups();
+        assertNotNull(startups, "Startups list should be initialized in the constructor");
+    }
+
 
 }

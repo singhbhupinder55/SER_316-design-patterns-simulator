@@ -1,7 +1,6 @@
 package patterns.singleton;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import patterns.factory.Building;
 
@@ -56,7 +55,7 @@ public class SimulationController {
      * @return the list of Building objects
      */
     public List<Building> getStartups() {
-        return Collections.unmodifiableList(startups);
+        return new ArrayList<>(startups);
     }
 
 }
