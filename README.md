@@ -143,7 +143,29 @@ To effectively implement the design patterns in this project, I referred to the 
 # Summary
 These resources provided a solid foundation for understanding the design patterns used in the project and helped in applying them effectively within the context of the Design Patterns Simulator. Each pattern was carefully chosen to meet specific project requirements and to maintain flexibility and ease of maintenance in the simulation system.
 
+## Youtube ScreenCast Link
 
+https://youtu.be/4Hl_vsW68wg
+
+# Screencast Description:
+
+- In this video, I demonstrate the steps I followed to complete the project setup and showcase the functionality:
+
+- **Clone the Repository Locally**: I begin by cloning the project repository from GitHub to my local machine using the terminal.
+
+- **Open the Project in IntelliJ IDEA**: After cloning, I open the project in IntelliJ IDEA, showing the structure and files included in the project.
+
+- **Build the Project Using Gradle**: Next, I run the gradle build command to build the project, showcasing the successful build process.
+
+- **Show the Reports**:
+
+- SpotBugs Report: I open the SpotBugs report to display any identified issues or warnings.
+- Checkstyle Report: I then show the Checkstyle report, confirming that the code adheres to the specified coding standards.
+- GitHub Actions CI Report: I proceed to demonstrate the status of the GitHub Actions Continuous Integration (CI) process, ensuring the build and tests pass in the CI pipeline.
+- JUnit Report: Finally, I open the JUnit test report, confirming that all unit tests passed successfully with 100% coverage.
+- Display the README.md File: I briefly show the contents of the README.md file, which provides details on the project setup, design patterns, and other relevant information.
+
+- Run the Project: In the final step, I run the project to ensure everything works as expected, demonstrating the successful execution of the application
 
 
 
