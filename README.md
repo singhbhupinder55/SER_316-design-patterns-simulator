@@ -49,7 +49,19 @@ Here is a screenshot of the SpotBugs report after running the analysis:
 Here is a screenshot of the Checkstyle report:
 ![CheckStyle Report](images/checkstyle.png)
 
+## Resolution of Checkstyle Warnings:
+ - All Checkstyle warnings have been successfully resolved. The audit shows no errors in any of the 23 files analyzed. This indicates that the code adheres to the specified coding standards, and no further issues were found during the check.
+
 ## ScreenShots of Jacoco Report
 Here is a screenshot of the Jacoco report:
 ![Jacoco Report](images/jacocoReport.png)
+
+## JaCoCo Report Summary:
+- The JaCoCo report indicates the following test coverage:
+-Overall Test Coverage: 83% (351 out of 2,101 instructions covered).
+- Branch Coverage: 86% (28 out of 206 branches covered).
+- Simulation Package: 94% coverage.
+- Events Package: 100% coverage, showing excellent testing for this module.
+- Helper and Singleton Packages: Low coverage in the helper package, with 0% coverage.
+
 
