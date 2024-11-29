@@ -35,7 +35,8 @@ public class Main {
      * @param args command-line arguments (not used in this method)
      */
     public static void main(String[] args) {
-        System.out.println("\n==================== Silicon Valley Simulation ====================\n");
+        System.out.println("\n==================== Silicon Valley Simulation "
+                + "====================\n");
 
         // Step 1: Initialize Singleton
         System.out.println("Initializing Simulation...");

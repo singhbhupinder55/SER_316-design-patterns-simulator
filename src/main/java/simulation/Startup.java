@@ -246,9 +246,11 @@ public class Startup {
         opponent.takeDamage(damage, attackType);
 
         // After attack, show remaining health only once
-        return String.format("%s used %s on %s. Damage: %.2f\n" +
-                        "%s has %.2f remaining.\n--------------------------------------------",
-                this.name, attackType, opponent.getName(), damage, opponent.getName(), opponent.getRevenue());
+        return String.format("%s used %s on %s. Damage: %.2f" + "\n"
+                        + "%s has %.2f remaining."
+                        + "\n--------------------------------------------",
+                this.name, attackType, opponent.getName(),
+                damage, opponent.getName(), opponent.getRevenue());
     }
 
 
