@@ -28,3 +28,28 @@ To work with this project, follow the instructions below:
    cd siliconvalleysimulator-DesignPatternsSimulator
 
 
+## ScreenShots of SpotBugs Report
+
+Here is a screenshot of the SpotBugs report after running the analysis:
+![SpotBugs Report 1](images/sb1.png)
+![SpotBugs Report 2](images/sb2.png)
+![SpotBugs Report 3](images/sb3.png)
+
+
+## Reason for Unresolved Issues in SpotBugs:
+
+- **Checkstyle (%n vs \n)**: This warning suggests using %n for platform-independent newlines, but changing to %n would require significant refactoring and could lead to platform-specific issues, so it was left unresolved.
+
+- **SpotBugs (Exposing Array)**: The warning about returning an array from a static method relates to design decisions in our project, where returning the array is necessary for the intended functionality. Refactoring this would complicate the architecture unnecessarily, so it was not fixed.
+- 
+- Both issues do not impact core functionality, and resolving them would introduce unnecessary complexity.
+ 
+
+## ScreenShots of CheckStyle Report
+Here is a screenshot of the Checkstyle report:
+![CheckStyle Report](images/checkstyle.png)
+
+## ScreenShots of Jacoco Report
+Here is a screenshot of the Jacoco report:
+![Jacoco Report](images/jacocoReport.png)
+
