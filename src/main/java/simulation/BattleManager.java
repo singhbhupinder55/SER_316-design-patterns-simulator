@@ -10,15 +10,17 @@ import java.util.Random;
  */
 public class BattleManager {
 
+    private static final Random random = new Random(); // Reuse Random instance for efficiency
+
     /**
      * Initiates a battle between two startups.
      * @param startup1 the first startup
      * @param startup2 the second startup
      * @return the winning startup
      */
-    public static Startup startBattle(Startup startup1, Startup startup2, TechGiant winnerTechGiant) {
+    public static Startup startBattle(Startup startup1,
+                                      Startup startup2, TechGiant winnerTechGiant) {
         System.out.println("Battle Start: " + startup1.getName() + " vs. " + startup2.getName());
-
 
         // Handle the case where one of the startups has zero revenue initially
         if (startup1.getRevenue() <= 0) {
@@ -30,37 +32,40 @@ public class BattleManager {
             return startup1;
         }
 
-        Random random = new Random();
         while (startup1.getRevenue() > 0 && startup2.getRevenue() > 0) {
-            System.out.println(performAttack(startup1, startup2, random));
-            if (startup2.getRevenue() <= 0) {
-                System.out.println(startup1.getName() + " wins the battle!");
-                startup1.gainExperience(5);
-
-                // Add reward for defeating wild startups
-                if (winnerTechGiant != null && startup2.isWild()) {
-                    System.out.println(startup2.getName() + " is a wild startup and will be acquired.");
-                    winnerTechGiant.addStartup(startup2); // Acquire wild startup
-                }
+            if (performRound(startup1, startup2, winnerTechGiant)) {
                 return startup1;
             }
-
-            // Startup 2 attacks Startup 1
-            System.out.println(performAttack(startup2, startup1, random));
-            if (startup1.getRevenue() <= 0) {
-                System.out.println(startup2.getName() + " wins the battle!");
-                startup2.gainExperience(5);
-                // Check and add wild startup to the winning Tech Giant
-                if (winnerTechGiant != null && startup1.isWild()) {
-                    System.out.println(startup1.getName() + " is a wild startup and will be acquired.");
-                    winnerTechGiant.addStartup(startup1); // Acquire the wild startup
-                }
+            if (performRound(startup2, startup1, winnerTechGiant)) {
                 return startup2;
             }
         }
         System.out.println("The battle ended with no winner.");
         return null; // Should not reach here
     }
+
+    /**
+     * Performs a round of attack between two startups.
+     * @param attacker the startup performing the attack
+     * @param defender the startup being attacked
+     * @param winnerTechGiant the tech giant that may acquire the defeated wild startup
+     * @return true if attacker wins, false otherwise
+     */
+    private static boolean performRound(Startup attacker,
+                                        Startup defender, TechGiant winnerTechGiant) {
+        System.out.println(performAttack(attacker, defender, winnerTechGiant)); // Attack phase
+        if (defender.getRevenue() <= 0) {
+            System.out.println(attacker.getName() + " wins the battle!");
+            attacker.gainExperience(5); // Gain XP for the winner
+            if (winnerTechGiant != null && defender.isWild()) {
+                System.out.println(defender.getName() + " is a wild startup and will be acquired.");
+                winnerTechGiant.addStartup(defender); // Acquire the wild startup
+            }
+            return true; // Attacker wins
+        }
+        return false; // Battle continues
+    }
+
     /**
      * Performs an attack from one startup to another with mechanics like type advantage,
      * critical hits, and misses.
@@ -68,19 +73,31 @@ public class BattleManager {
      * @param defender the startup being attacked
      * @return a summary of the attack
      */
-    public static String performAttack(Startup attacker, Startup defender, Random random) {
+    public static String performAttack(Startup attacker,
+                                       Startup defender, TechGiant winnerTechGiant) {
 
-        // 10% chance to miss
-        if (random.nextDouble() < 0.1) {
+        // Check for miss chance
+        if (checkMiss()) {
             return attacker.getName() + " missed the attack!";
         }
-        // 20% chance for critical hit (or you can adjust this as needed)
-        if (random.nextDouble() < 0.2) {
+
+        // Check for critical hit
+        if (checkCriticalHit()) {
             return attacker.getName() + " landed a critical hit! " + attacker.attack(defender);
         }
 
 
-        // Use Startup's attack method
+
         return attacker.attack(defender);
+    }
+
+
+    // Helper methods for checks
+    private static boolean checkMiss() {
+        return random.nextDouble() < 0.1; // 10% chance to miss
+    }
+
+    private static boolean checkCriticalHit() {
+        return random.nextDouble() < 0.2; // 20% chance for critical hit
     }
 }

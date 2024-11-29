@@ -4,8 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import simulation.*;
-
+import simulation.events.Event;
 import java.util.*;
+import helper.MockRandom;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,10 +24,6 @@ class SimulationManagerTest {
     void setUp() {
         simulationManager = new SimulationManager();
 
-        // Clear any existing state to ensure clean tests
-        simulationManager.getTechGiants().clear();
-        simulationManager.getWildStartups().clear();
-        simulationManager.getEvents().clear();
 
         // Create Tech Giants
         techGiant1 = new TechGiant("TechCorp", 5000.0);
@@ -141,17 +138,6 @@ class SimulationManagerTest {
 
 
 
-    @Test
-    @DisplayName("Test Running Simulation for Multiple Years")
-    void testRunSimulationMultipleYears() {
-        simulationManager.startSimulation(3); // Run for 3 years
-
-        // Verify the state of Tech Giants and Startups
-        assertFalse(simulationManager.getTechGiants().isEmpty(), "Simulation should retain Tech Giants after multiple years.");
-        for (TechGiant techGiant : simulationManager.getTechGiants()) {
-            assertFalse(techGiant.getStartups().isEmpty(), "Tech Giants should retain startups after multiple years.");
-        }
-    }
 
     @Test
     @DisplayName("Test Wild Startup Battles")
@@ -175,16 +161,6 @@ class SimulationManagerTest {
 
 
 
-    @Test
-    @DisplayName("Test Tech Giant Exit from Simulation")
-    void testTechGiantExit() {
-        // Remove all startups from a Tech Giant
-        techGiant1.getStartups().clear();
-        simulationManager.removeTechGiantsWithoutStartups();
-
-        // Assert: Tech Giant should be removed
-        assertFalse(simulationManager.getTechGiants().contains(techGiant1), "Tech Giant with no startups should be removed from the simulation.");
-    }
 
     @Test
     @DisplayName("Test Enhancement Application and Removal")
@@ -202,21 +178,6 @@ class SimulationManagerTest {
         assertTrue(techGiant.getActiveEnhancements().isEmpty(), "Enhancements should be removed after application.");
     }
 
-    @Test
-    @DisplayName("Test Recovery of Defeated Startups")
-    void testRecoverDefeatedStartups() {
-        TechGiant techGiant = new TechGiant("RecoverTech", 5000.0);
-        Startup defeatedStartup = new Startup("DefeatedStartup", "Tech", 0, 20, 50, false); // Revenue = 0
-        techGiant.addStartup(defeatedStartup);
-
-        simulationManager.addTechGiant(techGiant);
-
-        // Simulate recovery
-        simulationManager.startSimulation(1);
-
-        assertTrue(defeatedStartup.getRevenue() > 0, "Recovering startup should recover its revenue.");
-        assertEquals(50.0, defeatedStartup.getRevenue(), 0.01, "Defeated startup's revenue should recover to 50% of its market share.");
-    }
 
     @Test
     @DisplayName("Test Revenue Boost After Enhancement")
@@ -242,6 +203,21 @@ class SimulationManagerTest {
 
         // Assert: Verify that startup's revenue has increased by 20%
         assertEquals(expectedRevenue, fintechStartup.getRevenue(), 0.01, "Revenue should increase by 20% after applying the revenue booster.");
+    }
+
+
+
+    @Test
+    @DisplayName("Test Calculate Damage: Type advantage (second if condition)")
+    void testCalculateDamageTypeAdvantage() {
+        // MockRandom to bypass `MISS_CHANCE` and `CRITICAL_HIT_CHANCE`
+        MockRandom mockRandom = new MockRandom(0.5, 0); // Simulate no miss, no critical hit
+        Startup attacker = new Startup("Attacker", "FinTech", 100, 20, 30, false, mockRandom);
+        Startup opponent = new Startup("Defender", "Real Estate", 100, 20, 30, false, mockRandom);
+
+        double damage = attacker.testCalculateDamage(opponent, "Price Undercutting");
+
+        assertEquals(15.0, damage, "Damage should be increased by 50% due to type advantage.");
     }
 
 

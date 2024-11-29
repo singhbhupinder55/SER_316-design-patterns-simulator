@@ -3,8 +3,8 @@ package simulationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import simulation.Event;
 import simulation.Startup;
+import simulation.events.Event;
 
 import java.util.ArrayList;
 import java.util.List;

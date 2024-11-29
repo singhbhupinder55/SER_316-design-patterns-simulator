@@ -7,7 +7,7 @@ package patterns.strategy;
 public class DefensiveStrategy implements Strategy {
 
     /**
-     * Executes the defensive strategy
+     * Executes the defensive strategy.
      * @return a message describing the defensive strategy.
      */
     @Override

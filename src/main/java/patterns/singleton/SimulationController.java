@@ -1,16 +1,20 @@
 package patterns.singleton;
 
-import patterns.factory.Building;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import patterns.factory.Building;
+
 /**
  * Singleton class for managing the simulation.
  * Ensures only one instance of SimulationController exists.
  */
 public class SimulationController {
 
-    // Step 1: Create a private static variable to hold the single instance.
+    // Create a private static variable to hold the single instance.
     private static volatile SimulationController instance;
+
+
 
     // Stores a list of startups for the simulation
     private final List<Building> startups;
@@ -35,8 +39,8 @@ public class SimulationController {
                 }
             }
         }
-            return instance;
-        }
+        return instance;
+    }
 
     /**
      * Adds a startup to the simulation.
@@ -52,6 +56,7 @@ public class SimulationController {
      * @return the list of Building objects
      */
     public List<Building> getStartups() {
-        return startups;
+        return Collections.unmodifiableList(startups);
     }
+
 }

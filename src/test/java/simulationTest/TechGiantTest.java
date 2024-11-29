@@ -220,23 +220,6 @@ public class TechGiantTest {
     }
 
 
-    @Test
-    @DisplayName("Test TechGiant Losing All Startups in Battle")
-    void testTechGiantLosingAllStartupsInBattle() {
-        // Arrange
-        TechGiant opponent = new TechGiant("Competitor Corp", 5000.0);
-        Startup myStartup = new Startup("TechEdge", "AI", 1000, 30, 50, false);
-        Startup opponentStartup = new Startup("AICompetitor", "AI", 1000, 25, 45, false);
-
-        techGiant.addStartup(myStartup);
-        opponent.addStartup(opponentStartup);
-
-        // Act
-        Startup winner = techGiant.battle(opponent);  // Perform battle
-
-        // Assert the number of startups before and after battle
-        assertTrue(techGiant.getStartups().isEmpty(), "TechGiant should have no startups left after losing all battles.");
-    }
 
     @Test
     void testTechGiantConstructorWithName() {

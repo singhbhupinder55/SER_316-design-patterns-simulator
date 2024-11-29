@@ -25,6 +25,6 @@ To work with this project, follow the instructions below:
 1. Clone the repository:
    ```bash
    git clone <repository-link>
-   cd ser316-DesignPatternsSimulator
+   cd siliconvalleysimulator-DesignPatternsSimulator
 
 

@@ -21,7 +21,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'ser316.Main' // Specify your main class with its package
+    mainClass = 'siliconvalleysimulator.Main' // Specify your main class with its package
 }
 
 
@@ -86,3 +86,8 @@ tasks.check {
 tasks.named('test') {
     useJUnitPlatform() // Enable JUnit 5 platform for tests
 }
+
+jacoco {
+    toolVersion = "0.8.8"  // Or whatever the latest Jacoco version is
+}
+

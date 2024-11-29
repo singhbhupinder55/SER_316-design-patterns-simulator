@@ -7,7 +7,7 @@ import java.util.Random;
  * Each startup has attributes like revenue, market share, and experience points.
  * Attribute Details:
  * - Revenue: Represents the financial health of the startup in monetary units (e.g., $100K, $1M).
- * - Market Share: Represents the startup's influence in the market as a percentage (e.g., 10 means 10%).
+ * - Market Share: Represents the startup's influence in market as percentage (e.g., 10 means 10%).
  * - Net Income: Represents profitability in monetary units (e.g., $20K, $500K).
  */
 public class Startup {
@@ -25,7 +25,8 @@ public class Startup {
     private final Random randomGenerator; // Instance of Random for controlled randomness
     private static final double CRITICAL_HIT_CHANCE = 0.2;
     private static final double MISS_CHANCE = 0.1;
-    private static final String[] ATTACK_TYPES = {"Talent Drain", "Trade Secret Theft", "Price Undercutting"};
+    private static final String[] ATTACK_TYPES =
+    {"Talent Drain", "Trade Secret Theft", "Price Undercutting"};
 
 
     /**
@@ -38,7 +39,9 @@ public class Startup {
      * @param isWild      Indicates whether the startup is wild or owned by a Tech Giant.
      * @throws IllegalArgumentException if the name or type is null or empty.
      */
-    public Startup(String name, String type, double revenue, double marketShare, double netIncome, boolean isWild) {
+    public Startup(String name,
+                   String type, double revenue, double marketShare,
+                   double netIncome, boolean isWild) {
 
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
@@ -58,7 +61,22 @@ public class Startup {
         this.randomGenerator = new Random();
     }
 
-    // Overloaded Constructor (With Random Parameter)
+    /**
+     * Constructs a new Startup object with the specified parameters.
+     * Ensures that the name and type are not null or empty. Revenue, market share,
+     * and net income are constrained to be non-negative. Initializes the experience
+     * points to 0, the stage to "Garage Startup", and assigns the random generator
+     * and wild status.
+     *
+     * @param name the name of the startup
+     * @param type the type of the startup
+     * @param revenue the revenue of the startup (cannot be negative)
+     * @param marketShare the market share of the startup (cannot be negative)
+     * @param netIncome the net income of the startup (cannot be negative)
+     * @param isWild indicates if the startup is a wild startup
+     * @param randomGenerator the random number generator to be used for random operations
+     * @throws IllegalArgumentException if the name or type is null or empty
+     */
     public Startup(String name, String type, double revenue, double marketShare, double netIncome,
                    boolean isWild, Random randomGenerator) {
         if (name == null || name.isEmpty()) {
@@ -76,7 +94,7 @@ public class Startup {
         this.experiencePoints = 0;
         this.stage = "Garage Startup";
         this.isWild = isWild;
-        this.randomGenerator = randomGenerator;
+        this.randomGenerator = new Random(randomGenerator.nextLong());
     }
 
     /**
@@ -197,28 +215,26 @@ public class Startup {
         switch (attackType) {
             case "Talent Drain":
                 this.marketShare = Math.max(0, this.marketShare - damage);
-                System.out.println(name + " lost " + damage + " Market Share due to Talent Drain.");
                 break;
 
             case "Trade Secret Theft":
                 this.netIncome = Math.max(0, this.netIncome - damage);
-                System.out.println(name + " lost " + damage + " Net Income due to Trade Secret Theft.");
                 break;
 
             case "Price Undercutting":
                 this.revenue = Math.max(0, this.revenue - damage);
-                System.out.println(name + " lost " + damage + " Revenue due to Price Undercutting. Current Revenue:" + this.revenue);
                 break;
 
             default:
-                System.out.println("Invalid attack type: " + attackType);
+                break;
         }
     }
 
 
     /**
      * Performs an attack on another startup.
-     * The attack type and damage are determined based on the attacker's attributes and type advantages.
+     * The attack type and damage are determined based on the attacker's attributes
+     * and type advantages.
      * @param opponent The opponent startup being attacked.
      * @return A summary of the attack, including the damage dealt.
      * @throws IllegalArgumentException if the opponent is null.
@@ -232,6 +248,13 @@ public class Startup {
         // Determine attack type
         String attackType = determineAttackType();
         double damage = calculateDamage(opponent, attackType);
+
+        // Critical hit logic
+        if (randomGenerator.nextDouble() < CRITICAL_HIT_CHANCE) {
+            damage *= 2; // Double the damage for critical hit
+            attackType = "Price Undercutting"; // Change attack type
+        }
+
         opponent.takeDamage(damage, attackType);
 
         return String.format("%s used %s on %s. Damage: %.2f",
@@ -294,20 +317,15 @@ public class Startup {
     private double calculateDamage(Startup opponent, String attackType) {
         double baseDamage = 10.0; // Default damage value
         if (randomGenerator.nextDouble() <  MISS_CHANCE) { // 10% chance to miss
-            System.out.println(name + " missed the attack!");
             return 0;
         }
 
         // Type advantage logic
-        if ((type.equalsIgnoreCase("Operating Systems") && opponent.getType().equalsIgnoreCase("Social Media")) ||
-                (type.equalsIgnoreCase("FinTech") && opponent.getType().equalsIgnoreCase("Real Estate"))) {
+        if ((type.equalsIgnoreCase("Operating Systems")
+                && opponent.getType().equalsIgnoreCase("Social Media"))
+                || (type.equalsIgnoreCase("FinTech")
+                && opponent.getType().equalsIgnoreCase("Real Estate"))) {
             baseDamage *= 1.5;
-            System.out.println("Type advantage! Damage boosted by 50%.");
-        }
-
-        if (randomGenerator.nextDouble() < CRITICAL_HIT_CHANCE) { // 20% chance for critical hit
-            baseDamage *= 2;
-            System.out.println("Critical hit! Damage doubled.");
         }
 
         return baseDamage;

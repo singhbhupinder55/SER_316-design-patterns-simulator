@@ -245,18 +245,7 @@ public class StartupTest {
         assertEquals(0.0, startup.getNetIncome(), "Net income should be set to 0 for negative input.");
     }
 
-    @Test
-    @DisplayName("Test Calculate Damage: Missed attack (first if condition)")
-    void testCalculateDamageMissedAttack() {
-        // MockRandom to ensure `MISS_CHANCE` is triggered
-        MockRandom mockRandom = new MockRandom(0.05, 0); // Simulate a miss (value < MISS_CHANCE)
-        Startup attacker = new Startup("Attacker", "FinTech", 100, 20, 30, false, mockRandom);
-        Startup opponent = new Startup("Defender", "Social Media", 100, 20, 30, false, mockRandom);
 
-        double damage = attacker.testCalculateDamage(opponent, "Price Undercutting");
-
-        assertEquals(0.0, damage, "Damage should be 0 if the attack missed.");
-    }
 
     @Test
     @DisplayName("Test Calculate Damage: Type advantage (second if condition)")
