@@ -85,6 +85,7 @@ public class Event {
      * @param startups The list of startups affected by the event.
      */
     public void applyEffects(List<Startup> startups) {
+        System.out.println("-----------------------------------------------------------");
         System.out.println("Applying event: " + name + " (" + quarter + ")");
         for (Startup startup : startups) {
             // Added logging to trace startup effects
@@ -98,6 +99,7 @@ public class Event {
             System.out.println("After Event: " + startup.getName()
                     + " | Revenue: " + startup.getRevenue()
                     + " | Market Share: " + startup.getMarketShare());
+            System.out.println("-----------------------------------------------------------\n");
         }
     }
 }

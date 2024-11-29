@@ -35,7 +35,7 @@ public class Main {
      * @param args command-line arguments (not used in this method)
      */
     public static void main(String[] args) {
-        System.out.println("Hello, Silicon Valley Simulator!");
+        System.out.println("\n==================== Silicon Valley Simulation ====================\n");
 
         // Step 1: Initialize Singleton
         System.out.println("Initializing Simulation...");
@@ -125,15 +125,16 @@ public class Main {
         System.out.println("Wild Startups added to simulation.");
 
         // Start simulation for 1 year
-        System.out.println("\nStarting Simulation...");
+        System.out.println("\n==================== Simulation Start ====================\n");
         manager.startSimulation(1);
 
         // Display startups managed by the Singleton Controller
+        System.out.println("\n==================== Final Results ====================\n");
         System.out.println("\nFinal startups in the Simulation Controller:");
         for (Building startup : controller.getStartups()) {
             System.out.println("- " + startup.getClass().getSimpleName());
         }
 
-        System.out.println("\nSimulation Completed. Thank you for using Silicon Valley Simulator!");
+        System.out.println("\n==================== Simulation Completed ====================\n");
     }
 }

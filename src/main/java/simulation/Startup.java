@@ -245,8 +245,10 @@ public class Startup {
 
         opponent.takeDamage(damage, attackType);
 
-        return String.format("%s used %s on %s. Damage: %.2f",
-                this.name, attackType, opponent.getName(), damage);
+        // After attack, show remaining health only once
+        return String.format("%s used %s on %s. Damage: %.2f\n" +
+                        "%s has %.2f remaining.\n--------------------------------------------",
+                this.name, attackType, opponent.getName(), damage, opponent.getName(), opponent.getRevenue());
     }
 
 
@@ -302,6 +304,7 @@ public class Startup {
      * @param attackType The type of attack being performed.
      * @return The calculated damage value.
      */
+
     private double calculateDamage(Startup opponent, String attackType) {
         double baseDamage = 10.0; // Default damage value
         if (randomGenerator.nextDouble() <  MISS_CHANCE) { // 10% chance to miss

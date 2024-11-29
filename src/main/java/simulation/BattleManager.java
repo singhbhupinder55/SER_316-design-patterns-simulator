@@ -20,7 +20,9 @@ public class BattleManager {
      */
     public static Startup startBattle(Startup startup1,
                                       Startup startup2, TechGiant winnerTechGiant) {
+        System.out.println("\n==================== Battle Mechanics ====================\n");
         System.out.println("Battle Start: " + startup1.getName() + " vs. " + startup2.getName());
+        System.out.println("-----------------------------------------------------------");
 
         // Handle the case where one of the startups has zero revenue initially
         if (startup1.getRevenue() <= 0) {
@@ -40,6 +42,7 @@ public class BattleManager {
                 return startup2;
             }
         }
+        System.out.println("\n==================== Battle Result ====================\n");
         System.out.println("The battle ended with no winner.");
         return null; // Should not reach here
     }
@@ -55,6 +58,7 @@ public class BattleManager {
                                         Startup defender, TechGiant winnerTechGiant) {
         System.out.println(performAttack(attacker, defender, winnerTechGiant)); // Attack phase
         if (defender.getRevenue() <= 0) {
+            System.out.println("\n==================== Battle Result ====================\n");
             System.out.println(attacker.getName() + " wins the battle!");
             attacker.gainExperience(5); // Gain XP for the winner
             if (winnerTechGiant != null && defender.isWild()) {

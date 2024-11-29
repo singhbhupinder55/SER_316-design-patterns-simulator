@@ -25,6 +25,10 @@ public class EventTest {
         startups = new ArrayList<>();
         startups.add(new Startup("HealthTech Inc.", "Healthcare", 100, 20, 10, false));
         startups.add(new Startup("FinTech Co.", "FinTech", 100, 30, 15, false));
+        startups.add(new Startup("RealWild Co.", "Real Estate", 70, 25, 10, false));
+        startups.add(new Startup("SocialWild Inc.", "Social Media", 50, 15, 10, true));
+        startups.add(new Startup("TechStartup", "UnknownType", 200, 10, 50, false)); // Unrecognized type
+
     }
 
     @Test
@@ -200,19 +204,6 @@ public class EventTest {
         assertEquals(0, startups.get(0).getMarketShare(), "Startup with 0 market share should remain unaffected.");
     }
 
-    @Test
-    @DisplayName("Test Economic Downturn: Unrecognized type")
-    void testEconomicDownturnUnrecognizedType() {
-        // Arrange
-        startups.add(new Startup("TechStartup", "UnknownType", 200, 10, 50, false));
-        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
-
-        // Act
-        event.applyEffects(startups);
-
-        // Assert
-        assertEquals(200, startups.get(2).getRevenue(), "Startup with unrecognized type should remain unaffected.");
-    }
 
 
     @Test
@@ -243,6 +234,87 @@ public class EventTest {
                 new Event("Valid Name", "Valid Description", "")
         );
         assertEquals("Event quarter cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Economic Downturn Effects for Healthcare")
+    public void testEconomicDownturnHealthcare() {
+        // Arrange
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(120, startups.get(0).getRevenue(), "Healthcare startup should gain 20% revenue.");
+    }
+
+    @Test
+    @DisplayName("Test Economic Downturn Effects for FinTech")
+    public void testEconomicDownturnFinTech() {
+        // Arrange
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(80, startups.get(1).getRevenue(), "FinTech startup should lose 20% revenue.");
+    }
+
+    @Test
+    @DisplayName("Test Economic Downturn Effects for Real Estate")
+    public void testEconomicDownturnRealEstate() {
+        // Arrange
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(63, startups.get(2).getRevenue(), "Real Estate startup should lose 10% revenue.");
+    }
+    @Test
+    @DisplayName("Test Economic Downturn Effects for Social Media")
+    public void testEconomicDownturnSocialMedia() {
+        // Arrange
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(55, startups.get(3).getRevenue(), "Social Media startup should gain 10% revenue.");
+    }
+
+    @Test
+    @DisplayName("Test Economic Downturn Effects for Unrecognized Type")
+    public void testEconomicDownturnUnknownType() {
+        // Arrange
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        assertEquals(230, startups.get(4).getRevenue(), "Startup with unrecognized type should experience 15% revenue change.");
+    }
+
+
+
+    @Test
+    @DisplayName("Test Economic Downturn: Market share remains unaffected")
+    void testEconomicDownturnMarketShare() {
+        // Arrange
+        Event event = new Event("Economic Downturn", "Market faces downturn", "Q2");
+
+        // Act
+        event.applyEffects(startups);
+
+        // Assert
+        // Market share should not change
+        assertEquals(20, startups.get(0).getMarketShare(), "Market share should remain the same for Healthcare.");
+        assertEquals(30, startups.get(1).getMarketShare(), "Market share should remain the same for FinTech.");
     }
 
 

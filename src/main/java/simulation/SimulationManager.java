@@ -178,6 +178,7 @@ public class SimulationManager {
      * @param currentQuarter The quarter to check for events.
      */
     private void applyEvents(String currentQuarter) {
+        System.out.println("\n==================== Event Handling ====================\n");
         for (Event event : events) {
             if (event.getQuarter().equalsIgnoreCase(currentQuarter)) {
                 event.applyEffects(wildStartups);
