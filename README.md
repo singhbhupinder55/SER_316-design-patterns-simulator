@@ -1,3 +1,52 @@
+# SER 316 - Design Patterns Simulator
+
+This repository contains a software project built as part of **SER 316: Software Enterprise – Design & Process** at **Arizona State University (Fall 2024)**. The project demonstrates the use of core software design patterns within a simulated Silicon Valley startup environment.
+
+## 🧱 Project Overview
+
+The project simulates startup growth and challenges using Java. It is modularly structured to showcase the practical application of **three major object-oriented design patterns**:  
+- **Singleton**
+- **Factory**
+- **Strategy**
+
+## 🧠 Learning Goals
+
+- Understand and apply software design patterns to real-world problems  
+- Refactor code for maintainability, reusability, and testability  
+- Align design patterns with software requirements and behavior  
+- Practice collaborative software development and clean coding
+
+## 🧪 Key Features
+
+| Component          | Design Pattern | Purpose/Use Case                                               |
+|--------------------|----------------|----------------------------------------------------------------|
+| `Startup.java`     | Singleton       | Ensure only one startup simulation instance exists             |
+| `EventFactory.java`| Factory         | Generate various startup events dynamically                    |
+| `PitchStrategy.java` & its subclasses | Strategy | Allow startups to pitch differently depending on market conditions |
+
+## 🛠️ Technologies Used
+
+- Java 18+
+- JUnit for testing
+- IntelliJ IDEA
+- Git & GitHub for version control
+
+## 💡 Key Skills Gained
+
+- Applied three major design patterns to a simulation scenario  
+- Created clean, modular, and extensible Java code  
+- Practiced writing testable code with unit tests  
+- Learned version control and teamwork in a development environment
+
+## 👨‍💻 Author
+
+**Bhupinder Singh**  
+Senior Software Engineering Student @ ASU  
+bsingh55@asu.edu | GitHub: [@singhbhupinder55](https://github.com/singhbhupinder55)
+
+---
+
+
 ## Submission A
 - Note: submission B README.md data is below:
 # Design Patterns Simulator
